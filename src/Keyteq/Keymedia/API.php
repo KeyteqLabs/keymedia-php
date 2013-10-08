@@ -2,6 +2,8 @@
 
 namespace Keyteq\Keymedia;
 
+use Keyteq\Keymedia\RequestSigner;
+
 class API
 {
     protected $apiKey;
@@ -13,6 +15,8 @@ class API
         $this->apiUser = $apiUser;
         $this->apiKey = $apiKey;
         $this->apiHost = $apiHost;
+
+        $this->signer = new RequestSigner($apiUser, $apiKey);
     }
 
     public function getApiUser()
@@ -30,4 +34,17 @@ class API
         return $this->apiHost;
     }
 
+    public function listMedia()
+    {
+        $path = "media.json";
+        $url = "http://{$this->apiHost}/{$path}";
+        $headers = $this->signer->getSignHeaders(array());
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        $ret = curl_exec($curl);
+
+        return $ret;
+
+    }
 }

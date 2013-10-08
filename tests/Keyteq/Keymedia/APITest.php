@@ -49,4 +49,12 @@ class APITest extends \PHPUnit_Framework_TestCase
         new API();
     }
 
+    public function testListMedia()
+    {
+        $key = '$1$8L39rZTl$5Q2RFjNAlpwz7SlEVbQl4.';
+        $api = new API($this->apiUser, $key, $this->apiHost);
+        $expected = '';
+        $actual = $api->listMedia();
+        $this->assertEquals($expected, $actual);
+    }
 }

@@ -18,8 +18,8 @@ class RequestSigner
         $signature = $this->getSignature($payload);
         
         return array(
-            'X-Keymedia-Username' => $this->apiUser,
-            'X-Keymedia-Signature' => $signature
+            "X-Keymedia-Username: {$this->apiUser}",
+            "X-Keymedia-Signature: {$signature}"
         );
     }
 

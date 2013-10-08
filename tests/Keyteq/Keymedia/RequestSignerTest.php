@@ -26,8 +26,8 @@ class RequestSignerTest extends \PHPUnit_Framework_TestCase
         $message = $this->getMessageForPayload($payload);
         $signature = hash_hmac('sha1', $message, $this->apiKey);
         $expected = array(
-            'X-Keymedia-Username' => $this->apiUser,
-            'X-Keymedia-Signature' => $signature
+            "X-Keymedia-Username: {$this->apiUser}",
+            "X-Keymedia-Signature: {$signature}"
         );
         $actual = $signer->getSignHeaders($payload);
         $this->assertEquals($expected, $actual);
