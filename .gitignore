@@ -1,0 +1,5 @@
+**.sw[op]
+/composer.lock
+/bin/
+/nbproject/
+/vendor/
