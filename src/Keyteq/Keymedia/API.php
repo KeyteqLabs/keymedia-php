@@ -36,8 +36,7 @@ class API
 
     public function listMedia()
     {
-        $path = "media.json";
-        $url = "http://{$this->apiHost}/{$path}";
+        $url = $this->buildUrl('media.json');
 
         return $this->request($url);
     }
@@ -52,5 +51,10 @@ class API
         $ret = curl_exec($curl);
 
         return $ret;
+    }
+
+    protected function buildUrl($path)
+    {
+        return sprintf('http://%s/%s', $this->apiHost, $path);
     }
 }
