@@ -71,6 +71,31 @@ class CurlWrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $this->ch->getRequestHeaders());
     }
 
+    public function testNoQueryParametersByDefault()
+    {
+        $this->assertEmpty($this->ch->getQueryParameters());
+    }
+
+    public function testAddQueryParameter()
+    {
+        $name = 'name';
+        $value = 'value';
+        $this->ch->addQueryParameter($name, $value);
+
+        $expected = "{$name}={$value}";
+        $actual = $this->ch->getQueryParameters();
+        $this->assertContains($expected, $actual);
+    }
+
+    public function testAddSameParameterTwice()
+    {
+        $name = 'name';
+        $value = 'value';
+        $this->ch->addQueryParameter($name, $value);
+        $this->ch->addQueryParameter($name, $value);
+        $this->assertCount(2, $this->ch->getQueryParameters());
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      */

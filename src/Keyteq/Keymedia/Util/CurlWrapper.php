@@ -15,6 +15,7 @@ class CurlWrapper
     protected $url;
     protected $method;
     protected $requestHeaders;
+    protected $queryParameters;
 
     public function __construct($url = null, $method = self::METHOD_GET)
     {
@@ -23,6 +24,7 @@ class CurlWrapper
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
         $this->setMethod($method);
         $this->requestHeaders = new ParameterContainer();
+        $this->queryParameters = new ParameterContainer();
     }
 
     public function getUrl()
@@ -39,6 +41,11 @@ class CurlWrapper
     public function getRequestHeaders()
     {
         return $this->requestHeaders->getElements(true);
+    }
+
+    public function getQueryParameters()
+    {
+        return $this->queryParameters->getElements(true);
     }
 
     public function getMethod()
@@ -77,4 +84,15 @@ class CurlWrapper
         $this->requestHeaders->add($header);
     }
 
+    /**
+     * Add a parameter to the request query string
+     *
+     * @param string $name parameter name
+     * @param string $value parameter value
+     */
+    public function addQueryParameter($name, $value)
+    {
+        $param = new QueryParameter($name, $value);
+        $this->queryParameters->add($param);
+    }
 }
