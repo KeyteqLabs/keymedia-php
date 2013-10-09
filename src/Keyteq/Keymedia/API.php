@@ -38,13 +38,19 @@ class API
     {
         $path = "media.json";
         $url = "http://{$this->apiHost}/{$path}";
+
+        return $this->request($url);
+    }
+
+    protected function request($url, $method = 'GET')
+    {
         $headers = $this->signer->getSignHeaders(array());
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         $ret = curl_exec($curl);
 
         return $ret;
-
     }
 }
