@@ -45,6 +45,32 @@ class CurlWrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testNoRequestHeadersByDefault()
+    {
+        $this->assertEmpty($this->ch->getRequestHeaders());
+    }
+
+    public function testAddRequestHeader()
+    {
+        $name = 'X-Test';
+        $value = 'test_value';
+        $this->ch->addRequestHeader($name, $value);
+
+        $expected = "{$name}: {$value}";
+        $actual = $this->ch->getRequestHeaders();
+        $this->assertContains($expected, $actual);
+    }
+
+    public function testAddSameHeaderTwice()
+    {
+        $name = 'X-Test';
+        $value = 'test_value';
+
+        $this->ch->addRequestHeader($name, $value);
+        $this->ch->addRequestHeader($name, $value);
+        $this->assertCount(2, $this->ch->getRequestHeaders());
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      */
