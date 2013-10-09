@@ -3,12 +3,14 @@
 namespace Keyteq\Keymedia;
 
 use Keyteq\Keymedia\RequestSigner;
+use Keyteq\Keymedia\Util\CurlWrapper;
 
 class API
 {
     protected $apiKey;
     protected $apiHost;
     protected $apiUser;
+    protected $curl;
 
     public function __construct($apiUser, $apiKey, $apiHost)
     {
@@ -17,6 +19,7 @@ class API
         $this->apiHost = $apiHost;
 
         $this->signer = new RequestSigner($apiUser, $apiKey);
+        $this->curl = new CurlWrapper();
     }
 
     public function getApiUser()
@@ -44,11 +47,14 @@ class API
     protected function request($url, $method = 'GET')
     {
         $headers = $this->signer->getSignHeaders(array());
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        $ret = curl_exec($curl);
+
+        foreach($headers as $k => $v) {
+            $this->curl->addRequestHeader($k, $v);
+        }
+
+        $this->curl->setUrl($url);
+
+        $ret = $this->curl->perform();
 
         return $ret;
     }

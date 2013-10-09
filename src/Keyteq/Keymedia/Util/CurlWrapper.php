@@ -95,4 +95,11 @@ class CurlWrapper
         $param = new QueryParameter($name, $value);
         $this->queryParameters->add($param);
     }
+
+    public function perform()
+    {
+        $headers = $this->getRequestHeaders();
+        curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);
+        return curl_exec($this->ch);
+    }
 }
