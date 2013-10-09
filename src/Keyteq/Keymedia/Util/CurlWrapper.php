@@ -2,6 +2,8 @@
 
 namespace Keyteq\Keymedia\Util;
 
+use Keyteq\Keymedia\Util\Container\ParameterContainer;
+
 class CurlWrapper
 {
 
@@ -12,7 +14,7 @@ class CurlWrapper
     protected $ch;
     protected $url;
     protected $method;
-    protected $requestHeaders = array();
+    protected $requestHeaders;
 
     public function __construct($url = null, $method = self::METHOD_GET)
     {
@@ -20,6 +22,7 @@ class CurlWrapper
         $this->ch = curl_init($url);
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
         $this->setMethod($method);
+        $this->requestHeaders = new ParameterContainer();
     }
 
     public function getUrl()
@@ -35,7 +38,7 @@ class CurlWrapper
 
     public function getRequestHeaders()
     {
-        return $this->requestHeaders;
+        return $this->requestHeaders->getElements(true);
     }
 
     public function getMethod()
@@ -70,8 +73,8 @@ class CurlWrapper
      */
     public function addRequestHeader($name, $value)
     {
-        $header = "{$name}: {$value}";
-        array_push($this->requestHeaders, $header);
+        $header = new HttpHeader($name, $value);
+        $this->requestHeaders->add($header);
     }
 
 }
