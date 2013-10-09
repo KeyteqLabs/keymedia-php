@@ -38,14 +38,14 @@ class CurlWrapper
         curl_setopt($this->ch, CURLOPT_URL, $url);
     }
 
-    public function getRequestHeaders()
+    public function getRequestHeaders($stringify = true)
     {
-        return $this->requestHeaders->getElements(true);
+        return $this->requestHeaders->getElements($stringify);
     }
 
-    public function getQueryParameters()
+    public function getQueryParameters($stringify = true)
     {
-        return $this->queryParameters->getElements(true);
+        return $this->queryParameters->getElements($stringify);
     }
 
     public function getMethod()
