@@ -2,7 +2,7 @@
 
 namespace Keyteq\Keymedia;
 
-use Keyteq\Keymedia\RequestSigner;
+use Keyteq\Keymedia\Util\RequestSigner;
 use Keyteq\Keymedia\Util\CurlWrapper;
 
 class API

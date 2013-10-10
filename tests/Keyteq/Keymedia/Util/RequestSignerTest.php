@@ -1,6 +1,6 @@
 <?php
 
-use Keyteq\Keymedia\RequestSigner;
+use Keyteq\Keymedia\Util\RequestSigner;
 
 class RequestSignerTest extends \PHPUnit_Framework_TestCase
 {

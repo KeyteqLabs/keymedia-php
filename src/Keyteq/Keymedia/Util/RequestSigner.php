@@ -1,6 +1,6 @@
 <?php
 
-namespace Keyteq\Keymedia;
+namespace Keyteq\Keymedia\Util;
 
 class RequestSigner
 {
