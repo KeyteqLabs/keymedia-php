@@ -5,6 +5,7 @@ namespace Keyteq\Keymedia\Util;
 use Keyteq\Keymedia\Util\Parameter\Container\ParameterContainer;
 use Keyteq\Keymedia\Util\Parameter\HttpHeader;
 use Keyteq\Keymedia\Util\Parameter\QueryParameter;
+use Keyteq\Keymedia\Util\Parameter\PostField;
 
 class CurlWrapper
 {
@@ -107,7 +108,7 @@ class CurlWrapper
 
     public function addPostField($name, $value)
     {
-        $field = new QueryParameter($name, $value);
+        $field = new PostField($name, $value);
         $this->postFields->add($field);
     }
 

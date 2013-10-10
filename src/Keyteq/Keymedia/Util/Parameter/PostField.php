@@ -2,6 +2,6 @@
 
 namespace Keyteq\Keymedia\Util\Parameter;
 
-class QueryParameter extends RequestParameter
+class PostField extends RequestParameter
 {
 }
