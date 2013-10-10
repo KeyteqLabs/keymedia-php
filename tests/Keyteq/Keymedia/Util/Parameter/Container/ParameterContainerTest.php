@@ -1,7 +1,7 @@
 <?php
 
-use Keyteq\Keymedia\Util\Container\ParameterContainer;
-use Keyteq\Keymedia\Util\NamedParameter;
+use Keyteq\Keymedia\Util\Parameter\Container\ParameterContainer;
+use Keyteq\Keymedia\Util\Parameter\NamedParameter;
 use \Mockery as m;
 
 class ParameterContainerTest extends \PHPUnit_Framework_TestCase
@@ -34,7 +34,7 @@ class ParameterContainerTest extends \PHPUnit_Framework_TestCase
     public function testGetStringifiedElements()
     {
         $stringified = 'key:value';
-        $item = m::mock('\Keyteq\Keymedia\Util\NamedParameter')
+        $item = m::mock('\Keyteq\Keymedia\Util\Parameter\NamedParameter')
             ->makePartial()
             ->shouldReceive('__toString')
             ->once()

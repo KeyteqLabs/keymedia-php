@@ -2,7 +2,9 @@
 
 namespace Keyteq\Keymedia\Util;
 
-use Keyteq\Keymedia\Util\Container\ParameterContainer;
+use Keyteq\Keymedia\Util\Parameter\Container\ParameterContainer;
+use Keyteq\Keymedia\Util\Parameter\HttpHeader;
+use Keyteq\Keymedia\Util\Parameter\QueryParameter;
 
 class CurlWrapper
 {

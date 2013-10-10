@@ -1,8 +1,9 @@
 <?php
 
-namespace Keyteq\Keymedia\Util\Container;
+namespace Keyteq\Keymedia\Util\Parameter\Container;
 
-use \Keyteq\Keymedia\Util\NamedParameter;
+use \Keyteq\Keymedia\Util\Parameter\NamedParameter;
+
 class ParameterContainer
 {
     protected $elements = array();

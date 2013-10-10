@@ -1,6 +1,6 @@
 <?php
 
-use Keyteq\Keymedia\Util\NamedParameter;
+use Keyteq\Keymedia\Util\Parameter\NamedParameter;
 
 class NamedParameterTest extends \PHPUnit_Framework_TestCase
 {

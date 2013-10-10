@@ -1,6 +1,6 @@
 <?php
 
-namespace Keyteq\Keymedia\Util;
+namespace Keyteq\Keymedia\Util\Parameter;
 
 class QueryParameter extends NamedParameter
 {
