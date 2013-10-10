@@ -1,6 +1,6 @@
 <?php
 
-use Keyteq\Keymedia\Util\Parameter\QueryParameter;
+namespace Keyteq\Keymedia\Util\Parameter;
 
 class QueryParameterTest extends \PHPUnit_Framework_TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-use Keyteq\Keymedia\Util\Parameter\PostField;
+namespace Keyteq\Keymedia\Util\Parameter;
 
 class PostFieldTest extends \PHPUnit_Framework_TestCase
 {

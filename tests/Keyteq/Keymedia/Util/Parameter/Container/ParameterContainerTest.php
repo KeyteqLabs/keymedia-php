@@ -1,6 +1,7 @@
 <?php
 
-use Keyteq\Keymedia\Util\Parameter\Container\ParameterContainer;
+namespace Keyteq\Keymedia\Util\Parameter\Container;
+
 use Keyteq\Keymedia\Util\Parameter\NamedParameter;
 use \Mockery as m;
 

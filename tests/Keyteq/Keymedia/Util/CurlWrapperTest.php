@@ -1,6 +1,6 @@
 <?php
 
-use Keyteq\Keymedia\Util\CurlWrapper;
+namespace Keyteq\Keymedia\Util;
 
 class CurlWrapperTest extends \PHPUnit_Framework_TestCase
 {

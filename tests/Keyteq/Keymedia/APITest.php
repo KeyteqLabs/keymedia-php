@@ -1,6 +1,6 @@
 <?php
 
-use \Keyteq\Keymedia\API;
+namespace Keyteq\Keymedia;
 
 class APITest extends \PHPUnit_Framework_TestCase
 {

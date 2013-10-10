@@ -1,6 +1,6 @@
 <?php
 
-use Keyteq\Keymedia\Util\Parameter\HttpHeader;
+namespace Keyteq\Keymedia\Util\Parameter;
 
 class HttpHeaderTest extends \PHPUnit_Framework_TestCase
 {
