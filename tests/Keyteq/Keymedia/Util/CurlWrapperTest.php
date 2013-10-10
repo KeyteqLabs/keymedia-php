@@ -96,6 +96,31 @@ class CurlWrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $this->ch->getQueryParameters());
     }
 
+    public function testNoPostFieldsByDefault()
+    {
+        $this->assertEmpty($this->ch->getPostFields());
+    }
+
+    public function testAddPostField()
+    {
+        $name = 'name';
+        $value = 'value';
+        $this->ch->addPostField($name, $value);
+
+        $expected = "{$name}={$value}";
+        $actual = $this->ch->getPostFields();
+        $this->assertContains($expected, $actual);
+    }
+
+    public function testAddSameFieldTwice()
+    {
+        $name = 'name';
+        $value = 'value';
+        $this->ch->addPostField($name, $value);
+        $this->ch->addPostField($name, $value);
+        $this->assertCount(2, $this->ch->getPostFields());
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -113,7 +138,6 @@ class CurlWrapperTest extends \PHPUnit_Framework_TestCase
         $this->ch->setMethod($method);
         $this->assertEquals($method, $this->ch->getMethod());
     }
-
 
     public function validMethods()
     {

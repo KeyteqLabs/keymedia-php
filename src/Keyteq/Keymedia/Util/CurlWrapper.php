@@ -16,6 +16,7 @@ class CurlWrapper
     protected $method;
     protected $requestHeaders;
     protected $queryParameters;
+    protected $postFields;
 
     public function __construct($url = null, $method = self::METHOD_GET)
     {
@@ -25,6 +26,7 @@ class CurlWrapper
         $this->setMethod($method);
         $this->requestHeaders = new ParameterContainer();
         $this->queryParameters = new ParameterContainer();
+        $this->postFields = new ParameterContainer();
     }
 
     public function getUrl()
@@ -46,6 +48,11 @@ class CurlWrapper
     public function getQueryParameters($stringify = true)
     {
         return $this->queryParameters->getElements($stringify);
+    }
+
+    public function getPostFields($stringify = true)
+    {
+        return $this->postFields->getElements($stringify);
     }
 
     public function getMethod()
@@ -94,6 +101,12 @@ class CurlWrapper
     {
         $param = new QueryParameter($name, $value);
         $this->queryParameters->add($param);
+    }
+
+    public function addPostField($name, $value)
+    {
+        $field = new QueryParameter($name, $value);
+        $this->postFields->add($field);
     }
 
     public function perform()
