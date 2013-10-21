@@ -28,7 +28,7 @@ class KeymediaClient
         // TODO
     }
 
-    public function getAlbum($albumName)
+    public function getAlbum($albumName, $searchTerm = false)
     {
         // TODO
     }

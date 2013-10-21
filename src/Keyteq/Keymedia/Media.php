@@ -19,7 +19,7 @@ class Media
         // TODO
     }
 
-    public function getThumbnail($width, $height)
+    public function getThumbnailUrl($width, $height)
     {
         // TODO
     }
