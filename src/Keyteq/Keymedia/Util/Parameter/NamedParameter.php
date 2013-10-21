@@ -4,6 +4,8 @@ namespace Keyteq\Keymedia\Util\Parameter;
 
 class NamedParameter
 {
+    const GLUE = '=';
+
     protected $name;
     protected $value;
 
@@ -25,5 +27,10 @@ class NamedParameter
     public function getValue()
     {
         return $this->value;
+    }
+
+    public function __toString()
+    {
+        return $this->name . static::GLUE . $this->value;
     }
 }
