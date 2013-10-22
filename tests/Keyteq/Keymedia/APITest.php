@@ -107,4 +107,16 @@ class APITest extends \PHPUnit_Framework_TestCase
 
         $api->getAlbum($albumName, $filter);
     }
+
+    public function testGetMediaInfo()
+    {
+        $this->markTestIncomplete('Pending curl wrapper extraction');
+        $id = '5252c9f895463493038b456a';
+        $key = '$1$8L39rZTl$5Q2RFjNAlpwz7SlEVbQl4.';
+        $api = new API($this->apiUser, $key, $this->apiHost);
+        $expected = '';
+        $actual = $api->getMediaInfo($id);
+
+        $this->assertEquals($expected, $actual);
+    }
 }

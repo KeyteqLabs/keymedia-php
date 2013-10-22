@@ -81,6 +81,13 @@ class API
         return $ret;
     }
 
+    public function getMediaInfo($id)
+    {
+        $url = $this->buildUrl("media/{$id}.json");
+
+        return $this->request($url);
+    }
+
     protected function buildUrl($path, ParameterContainer $parameters = null)
     {
         $url = sprintf('http://%s/%s', $this->apiHost, $path);
