@@ -119,4 +119,30 @@ class APITest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function testGetTypeThumbnailUrl()
+    {
+        $this->markTestIncomplete('Pending curl wrapper extraction');
+        $id = '5266383895463445038b4568';
+        $key = '$1$8L39rZTl$5Q2RFjNAlpwz7SlEVbQl4.';
+        $api = new API($this->apiUser, $key, $this->apiHost);
+
+        $expected = "http://{$this->apiHost}/images/filetypes/movie.png";
+        $actual = $api->getTypeThumbnailUrl($id);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testGetTypeThumbnailUrlFallback()
+    {
+        $this->markTestIncomplete('Pending curl wrapper extraction');
+        $id = '526637f095463448038b4567';
+        $key = '$1$8L39rZTl$5Q2RFjNAlpwz7SlEVbQl4.';
+        $api = new API($this->apiUser, $key, $this->apiHost);
+
+        $expected = "http://{$this->apiHost}/images/filetypes/fileicon_bg.png";
+        $actual = $api->getTypeThumbnailUrl($id);
+
+        $this->assertEquals($expected, $actual);
+    }
 }
