@@ -66,7 +66,14 @@ class API
         return $this->listMedia($parameters);
     }
 
-    protected function request($url)
+    public function listAlbums()
+    {
+        $url = $this->buildUrl('tags.json');
+
+        return $this->request($url);
+    }
+
+    protected function request($url, $decodeJson = true)
     {
         $headers = $this->signer->getSignHeaders(array());
 
@@ -75,17 +82,17 @@ class API
         }
 
         $this->curl->setUrl($url);
+        $response = $this->curl->perform();
 
-        $ret = $this->curl->perform();
-
-        return $ret;
+        return $decodeJson ? json_decode($response, true) : $response;
     }
 
-    public function getMediaInfo($id)
+    public function getMedia($id)
     {
         $url = $this->buildUrl("media/{$id}.json");
+        $json = $this->request($url, false);
 
-        return $this->request($url);
+        return new Media($json);
     }
 
     protected function buildUrl($path, ParameterContainer $parameters = null)
@@ -97,63 +104,5 @@ class API
         }
 
         return $url;
-    }
-
-    public function getTypeThumbnailUrl($mediaId)
-    {
-        $url = '';
-        $json = $this->getMediaInfo($mediaId);
-        if ($json) {
-            $parsed = json_decode($json, true);
-            $ending = $parsed['media']['file']['ending'];
-            $extension = pathinfo($ending, PATHINFO_EXTENSION);
-            $type = $this->mapExtensionToType($extension);
-            $url = $this->buildUrl("images/filetypes/{$type}.png");
-        }
-
-        return $url;
-    }
-
-    public function getImageThumbnailUrl($mediaId, $width, $height)
-    {
-        return $this->buildUrl("{$width}x{$height}/{$mediaId}.png");
-    }
-
-    protected function mapExtensionToType($extension)
-    {
-        $type = 'fileicon_bg';
-        $mappings = $this->getExtensionMappings();
-        $extension = strtolower($extension);
-
-        if (array_key_exists($extension, $mappings)) {
-            $type = $mappings[$extension];
-        }
-
-        return $type;
-    }
-
-    protected function getExtensionMappings()
-    {
-        return array(
-            'flv' => 'flash',
-            'f4p' => 'flash',
-            'f4v' => 'flash',
-            'swf' => 'flash',
-            'pdf' => 'pdf',
-            'xlsx' => 'excel',
-            'xls' => 'excel',
-            'doc' => 'word',
-            'docx' => 'word',
-            'avi' => 'movie',
-            'mpg' => 'movie',
-            'mov' => 'movie',
-            'key' => 'keynote',
-            'mp3' => 'music',
-            'psd' => 'photoshop',
-            'ppt' => 'powerpoint',
-            'pptx' => 'powerpoint',
-            'html' => 'html',
-            'css' => 'css'
-        );
     }
 }

@@ -108,53 +108,14 @@ class APITest extends \PHPUnit_Framework_TestCase
         $api->getAlbum($albumName, $filter);
     }
 
-    public function testGetMediaInfo()
+    public function testGetMedia()
     {
         $this->markTestIncomplete('Pending curl wrapper extraction');
         $id = '5252c9f895463493038b456a';
         $key = '$1$8L39rZTl$5Q2RFjNAlpwz7SlEVbQl4.';
         $api = new API($this->apiUser, $key, $this->apiHost);
-        $expected = '';
-        $actual = $api->getMediaInfo($id);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testGetTypeThumbnailUrl()
-    {
-        $this->markTestIncomplete('Pending curl wrapper extraction');
-        $id = '5266383895463445038b4568';
-        $key = '$1$8L39rZTl$5Q2RFjNAlpwz7SlEVbQl4.';
-        $api = new API($this->apiUser, $key, $this->apiHost);
-
-        $expected = "http://{$this->apiHost}/images/filetypes/movie.png";
-        $actual = $api->getTypeThumbnailUrl($id);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testGetTypeThumbnailUrlFallback()
-    {
-        $this->markTestIncomplete('Pending curl wrapper extraction');
-        $id = '526637f095463448038b4567';
-        $key = '$1$8L39rZTl$5Q2RFjNAlpwz7SlEVbQl4.';
-        $api = new API($this->apiUser, $key, $this->apiHost);
-
-        $expected = "http://{$this->apiHost}/images/filetypes/fileicon_bg.png";
-        $actual = $api->getTypeThumbnailUrl($id);
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testGetImageThumbnailUrl()
-    {
-        $this->markTestIncomplete('Pending curl wrapper extraction');
-        $id = '5252ba9895463497038b4567';
-        $key = '$1$8L39rZTl$5Q2RFjNAlpwz7SlEVbQl4.';
-        $api = new API($this->apiUser, $key, $this->apiHost);
-
-        $expected = 'http://m.keymedia.dev/119x96/5252ba9895463497038b4567.png';
-        $actual = $api->getImageThumbnailUrl($id, 119, 96);
+        $expected = (object) '';
+        $actual = $api->getMedia($id);
 
         $this->assertEquals($expected, $actual);
     }
