@@ -2,6 +2,8 @@
 
 namespace Keyteq\Keymedia;
 
+use \Mockery as m;
+
 class APITest extends \PHPUnit_Framework_TestCase
 {
 
@@ -17,6 +19,12 @@ class APITest extends \PHPUnit_Framework_TestCase
         $this->apiHost = 'm.keymedia.dev';
         $this->apiUser = 'admin@keyteq.no';
         $this->api = new API($this->apiUser, $this->apiKey, $this->apiHost);
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+        m::close();
     }
 
     public function testConstructSetsApiUser()
@@ -57,5 +65,46 @@ class APITest extends \PHPUnit_Framework_TestCase
         $expected = '';
         $actual = $api->listMedia();
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testFindMedia()
+    {
+        $searchTerm = 'searchTerm';
+        $api = m::mock('\Keyteq\Keymedia\API')
+            ->makePartial()
+            ->shouldReceive('listMedia')
+            ->once()
+            ->with(array('q' => $searchTerm))
+            ->getMock();
+
+        $api->findMediaByName($searchTerm);
+    }
+
+    public function testListAlbum()
+    {
+        $albumName = 'albumName';
+        $api = m::mock('\Keyteq\Keymedia\API')
+            ->makePartial()
+            ->shouldReceive('listMedia')
+            ->once()
+            ->with(array('tags' => $albumName))
+            ->getMock();
+
+        $api->getAlbum($albumName);
+    }
+
+
+    public function testListAlbumWithFilter()
+    {
+        $albumName = 'albumName';
+        $filter = 'filter';
+        $api = m::mock('\Keyteq\Keymedia\API')
+            ->makePartial()
+            ->shouldReceive('listMedia')
+            ->once()
+            ->with(array('tags' => $albumName, 'q' => $filter))
+            ->getMock();
+
+        $api->getAlbum($albumName, $filter);
     }
 }

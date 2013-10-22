@@ -4,6 +4,8 @@ namespace Keyteq\Keymedia;
 
 use Keyteq\Keymedia\Util\RequestSigner;
 use Keyteq\Keymedia\Util\CurlWrapper;
+use Keyteq\Keymedia\Util\Parameter\Container\ParameterContainer;
+use Keyteq\Keymedia\Util\Parameter\QueryParameter;
 
 class API
 {
@@ -37,14 +39,34 @@ class API
         return $this->apiHost;
     }
 
-    public function listMedia()
+    public function listMedia($parameters = array())
     {
-        $url = $this->buildUrl('media.json');
+        $parameterContainer = new ParameterContainer();
+        foreach ($parameters as $key => $value) {
+            $item = new QueryParameter($key, $value);
+            $parameterContainer->add($item);
+        }
+        $url = $this->buildUrl('media.json', $parameterContainer);
 
         return $this->request($url);
     }
 
-    protected function request($url, $method = 'GET')
+    public function findMediaByName($q)
+    {
+        return $this->listMedia(compact('q'));
+    }
+
+    public function getAlbum($album, $filter = false)
+    {
+        $parameters = array('tags' => $album);
+        if ($filter) {
+            $parameters['q'] = $filter;
+        }
+
+        return $this->listMedia($parameters);
+    }
+
+    protected function request($url)
     {
         $headers = $this->signer->getSignHeaders(array());
 
@@ -59,8 +81,14 @@ class API
         return $ret;
     }
 
-    protected function buildUrl($path)
+    protected function buildUrl($path, ParameterContainer $parameters = null)
     {
-        return sprintf('http://%s/%s', $this->apiHost, $path);
+        $url = sprintf('http://%s/%s', $this->apiHost, $path);
+
+        if (!(is_null($parameters) || $parameters->isEmpty())) {
+            $url .= '&' . $parameters;
+        }
+
+        return $url;
     }
 }
