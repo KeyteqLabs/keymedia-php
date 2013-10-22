@@ -114,6 +114,11 @@ class API
         return $url;
     }
 
+    public function getImageThumbnailUrl($mediaId, $width, $height)
+    {
+        return $this->buildUrl("{$width}x{$height}/{$mediaId}.png");
+    }
+
     protected function mapExtensionToType($extension)
     {
         $type = 'fileicon_bg';

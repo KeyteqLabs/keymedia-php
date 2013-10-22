@@ -145,4 +145,17 @@ class APITest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function testGetImageThumbnailUrl()
+    {
+        $this->markTestIncomplete('Pending curl wrapper extraction');
+        $id = '5252ba9895463497038b4567';
+        $key = '$1$8L39rZTl$5Q2RFjNAlpwz7SlEVbQl4.';
+        $api = new API($this->apiUser, $key, $this->apiHost);
+
+        $expected = 'http://m.keymedia.dev/119x96/5252ba9895463497038b4567.png';
+        $actual = $api->getImageThumbnailUrl($id, 119, 96);
+
+        $this->assertEquals($expected, $actual);
+    }
 }
