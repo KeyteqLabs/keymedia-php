@@ -66,8 +66,83 @@ class Media
         return $type;
     }
 
-    public function getThumbnailUrl($width, $height)
+    public function getThumbnailUrl($width = null, $height = null)
     {
-        // TODO
+        if ($this->isImage()) {
+            if (!(is_int($width) && is_int($height))) {
+                throw new \InvalidArgumentException('Image thumbnails require dimensions!');
+            }
+
+            return $this->getImageThumbnailUrl($width, $height);
+
+        } else {
+            return $this->getTypeThumbnailUrl();
+        }
+    }
+
+    protected function getTypeThumbnailUrl()
+    {
+        $extension = $this->getExtension();
+        $type = $this->mapExtensionToType($extension);
+        $url = $this->buildUrl("images/filetypes/{$type}.png");
+
+        return $url;
+    }
+
+    protected function getImageThumbnailUrl($width, $height)
+    {
+        return $this->buildUrl("{$width}x{$height}/{$this->_id}.png");
+    }
+
+    protected function getExtension()
+    {
+        $extension = $this->file['ending'];
+
+        return pathinfo($extension, PATHINFO_EXTENSION);
+    }
+
+    protected function mapExtensionToType($extension)
+    {
+        $type = 'fileicon_bg';
+        $mappings = $this->getExtensionMappings();
+        $extension = strtolower($extension);
+
+        if (array_key_exists($extension, $mappings)) {
+            $type = $mappings[$extension];
+        }
+
+        return $type;
+    }
+
+    protected function getExtensionMappings()
+    {
+        return array(
+            'flv' => 'flash',
+            'f4p' => 'flash',
+            'f4v' => 'flash',
+            'swf' => 'flash',
+            'pdf' => 'pdf',
+            'xlsx' => 'excel',
+            'xls' => 'excel',
+            'doc' => 'word',
+            'docx' => 'word',
+            'avi' => 'movie',
+            'mpg' => 'movie',
+            'mov' => 'movie',
+            'key' => 'keynote',
+            'mp3' => 'music',
+            'psd' => 'photoshop',
+            'ppt' => 'powerpoint',
+            'pptx' => 'powerpoint',
+            'html' => 'html',
+            'css' => 'css'
+        );
+    }
+
+    protected function buildUrl($path)
+    {
+        $url = sprintf('http://%s/%s', $this->host, $path);
+
+        return $url;
     }
 }
