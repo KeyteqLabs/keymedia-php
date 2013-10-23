@@ -20,21 +20,21 @@ class KeymediaClient
 
     public function findMedia($searchTerm)
     {
-        // TODO
+        return $this->api->findMediaByName($searchTerm);
     }
 
     public function getMedia($mediaId)
     {
-        // TODO
+        return $this->api->getMedia($mediaId);
     }
 
     public function getAlbum($albumName, $searchTerm = false)
     {
-        // TODO
+        return $this->api->getAlbum($albumName, $searchTerm);
     }
 
     public function listAlbums()
     {
-        // TODO
+        return $this->api->listAlbums();
     }
 }
