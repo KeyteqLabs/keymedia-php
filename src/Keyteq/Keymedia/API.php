@@ -13,6 +13,7 @@ class API
     protected $apiHost;
     protected $apiUser;
     protected $curl;
+    protected $signer;
 
     public function __construct($apiUser, $apiKey, $apiHost)
     {
@@ -48,7 +49,9 @@ class API
         }
         $url = $this->buildUrl('media.json', $parameterContainer);
 
-        return $this->request($url);
+        ksort($parameters);
+        $headers = $this->signer->getSignHeaders($parameters);
+        return $this->request($url, $headers);
     }
 
     public function findMediaByName($q)
@@ -73,10 +76,8 @@ class API
         return $this->request($url);
     }
 
-    protected function request($url, $decodeJson = true)
+    protected function request($url, $headers, $decodeJson = true)
     {
-        $headers = $this->signer->getSignHeaders(array());
-
         foreach($headers as $k => $v) {
             $this->curl->addRequestHeader($k, $v);
         }
@@ -90,7 +91,8 @@ class API
     public function getMedia($id)
     {
         $url = $this->buildUrl("media/{$id}.json");
-        $json = $this->request($url, false);
+        $headers = $this->signer->getSignHeaders(array());
+        $json = $this->request($url, $headers, false);
 
         return new Media($json);
     }
@@ -100,7 +102,7 @@ class API
         $url = sprintf('http://%s/%s', $this->apiHost, $path);
 
         if (!(is_null($parameters) || $parameters->isEmpty())) {
-            $url .= '&' . $parameters;
+            $url .= '?' . $parameters;
         }
 
         return $url;
