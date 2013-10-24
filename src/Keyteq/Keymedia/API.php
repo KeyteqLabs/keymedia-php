@@ -6,6 +6,7 @@ use Keyteq\Keymedia\Util\RequestSigner;
 use Keyteq\Keymedia\Util\CurlWrapper;
 use Keyteq\Keymedia\Util\Parameter\Container\ParameterContainer;
 use Keyteq\Keymedia\Util\Parameter\QueryParameter;
+use Keyteq\Keymedia\API\Request;
 
 class API
 {
@@ -47,11 +48,8 @@ class API
             $item = new QueryParameter($key, $value);
             $parameterContainer->add($item);
         }
-        $url = $this->buildUrl('media.json', $parameterContainer);
 
-        ksort($parameters);
-        $headers = $this->signer->getSignHeaders($parameters);
-        return $this->request($url, $headers);
+        return $this->request('media.json', $parameters);
     }
 
     public function findMediaByName($q)
@@ -71,40 +69,39 @@ class API
 
     public function listAlbums()
     {
-        $url = $this->buildUrl('tags.json');
+        $path = 'tags.json';
 
-        return $this->request($url);
+        return $this->request($path);
     }
 
-    protected function request($url, $headers, $decodeJson = true)
+    protected function request($path, array $parameters = array(), $decodeJson = true)
     {
-        foreach($headers as $k => $v) {
-            $this->curl->addRequestHeader($k, $v);
+        $request = new Request($this->getApiConfig(), $this->curl, new RequestSigner());
+        $request->setPath($path);
+
+        foreach ($parameters as $k => $v) {
+            $request->addQueryParameter($k, $v);
         }
 
-        $this->curl->setUrl($url);
-        $response = $this->curl->perform();
+        $response = $request->perform();
 
         return $decodeJson ? json_decode($response, true) : $response;
     }
 
     public function getMedia($id)
     {
-        $url = $this->buildUrl("media/{$id}.json");
-        $headers = $this->signer->getSignHeaders(array());
-        $json = $this->request($url, $headers, false);
+        $path = "media/{$id}.json";
+        $json = $this->request($path, array(), false);
 
         return new Media($json);
     }
 
-    protected function buildUrl($path, ParameterContainer $parameters = null)
+    protected function getApiConfig()
     {
-        $url = sprintf('http://%s/%s', $this->apiHost, $path);
-
-        if (!(is_null($parameters) || $parameters->isEmpty())) {
-            $url .= '?' . $parameters;
-        }
-
-        return $url;
+        return array(
+            'apiUser' => $this->getApiUser(),
+            'apiKey' => $this->getApiKey(),
+            'apiHost' => $this->getApiHost()
+        );
     }
 }

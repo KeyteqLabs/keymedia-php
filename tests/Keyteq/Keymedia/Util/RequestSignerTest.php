@@ -12,9 +12,8 @@ class RequestSignerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->apiUser = 'some_user';
         $this->apiKey = 'qwertyuiop[]';
-        $this->signer = new RequestSigner($this->apiUser, $this->apiKey);
+        $this->signer = new RequestSigner();
     }
 
     /**
@@ -24,12 +23,8 @@ class RequestSignerTest extends \PHPUnit_Framework_TestCase
     {
         $signer = $this->signer;
         $message = $this->getMessageForPayload($payload);
-        $signature = hash_hmac('sha1', $message, $this->apiKey);
-        $expected = array(
-            "X-Keymedia-Username" => $this->apiUser,
-            "X-Keymedia-Signature" => $signature
-        );
-        $actual = $signer->getSignHeaders($payload);
+        $expected = hash_hmac('sha1', $message, $this->apiKey);
+        $actual = $signer->getSignature($message, $this->apiKey);
         $this->assertEquals($expected, $actual);
     }
 

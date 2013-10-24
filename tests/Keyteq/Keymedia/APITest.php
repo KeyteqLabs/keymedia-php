@@ -62,7 +62,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $this->markTestIncomplete('Pending curl wrapper extraction');
         $key = '$1$8L39rZTl$5Q2RFjNAlpwz7SlEVbQl4.';
         $api = new API($this->apiUser, $key, $this->apiHost);
-        $expected = '';
+        $expected = array();
         $actual = $api->listMedia();
         $this->assertEquals($expected, $actual);
     }

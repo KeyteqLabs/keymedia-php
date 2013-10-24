@@ -27,7 +27,7 @@ class CurlWrapper
         $this->ch = curl_init($url);
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
         $this->setMethod($method);
-        $this->requestHeaders = new ParameterContainer();
+        $this->requestHeaders = array();
         $this->queryParameters = new ParameterContainer();
         $this->postFields = new ParameterContainer();
     }
@@ -43,9 +43,14 @@ class CurlWrapper
         curl_setopt($this->ch, CURLOPT_URL, $url);
     }
 
-    public function getRequestHeaders($stringify = true)
+    public function getRequestHeaders()
     {
-        return $this->requestHeaders->getElements($stringify);
+        return $this->requestHeaders;
+    }
+
+    public function setRequestHeaders(array $headers)
+    {
+        $this->requestHeaders = $headers;
     }
 
     public function getQueryParameters($stringify = true)
@@ -80,18 +85,6 @@ class CurlWrapper
                 throw new \InvalidArgumentException("Method not supported: {$method}");
         }
         $this->method = $method;
-    }
-
-    /**
-     * Add a header to the request
-     *
-     * @param string $name header name
-     * @param string $value header value
-     */
-    public function addRequestHeader($name, $value)
-    {
-        $header = new HttpHeader($name, $value);
-        $this->requestHeaders->add($header);
     }
 
     /**
