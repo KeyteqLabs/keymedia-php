@@ -60,11 +60,6 @@ class APITest extends \PHPUnit_Framework_TestCase
     public function testListMedia()
     {
         $this->markTestIncomplete('Pending curl wrapper extraction');
-        $key = '$1$8L39rZTl$5Q2RFjNAlpwz7SlEVbQl4.';
-        $api = new API($this->apiUser, $key, $this->apiHost);
-        $expected = array();
-        $actual = $api->listMedia();
-        $this->assertEquals($expected, $actual);
     }
 
     public function testFindMedia()
@@ -111,12 +106,5 @@ class APITest extends \PHPUnit_Framework_TestCase
     public function testGetMedia()
     {
         $this->markTestIncomplete('Pending curl wrapper extraction');
-        $id = '5252c9f895463493038b456a';
-        $key = '$1$8L39rZTl$5Q2RFjNAlpwz7SlEVbQl4.';
-        $api = new API($this->apiUser, $key, $this->apiHost);
-        $expected = (object) '';
-        $actual = $api->getMedia($id);
-
-        $this->assertEquals($expected, $actual);
     }
 }

@@ -2,30 +2,28 @@
 
 namespace Keyteq\Keymedia\API;
 
-use Keyteq\Keymedia\Util\CurlWrapper;
-use Keyteq\Keymedia\Util\Parameter\Container\ParameterContainer;
+use Keyteq\Keymedia\Util\RequestWrapper;
 use Keyteq\Keymedia\Util\RequestSigner;
-use Keyteq\Keymedia\Util\Parameter\HttpHeader;
-use Keyteq\Keymedia\Util\Parameter\QueryParameter;
+use \Requests;
 
 class Request
 {
     protected $apiUser;
     protected $apiKey;
     protected $apiHost;
-    protected $curl;
+    protected $method = Requests::GET;
     protected $path = '';
     protected $signer;
-    protected $queryParameters;
+    protected $requestWrapper;
+    protected $queryParameters = array();
 
-    public function __construct(array $apiConfig, CurlWrapper $curl, RequestSigner $signer)
+    public function __construct(array $apiConfig, RequestSigner $signer, RequestWrapper $requestWrapper)
     {
         $this->apiUser = $apiConfig['apiUser'];
         $this->apiKey = $apiConfig['apiKey'];
         $this->apiHost = $apiConfig['apiHost'];
-        $this->curl = $curl;
         $this->signer = $signer;
-        $this->queryParameters = new ParameterContainer();
+        $this->requestWrapper = $requestWrapper;
     }
 
     public function setPath($path)
@@ -37,20 +35,28 @@ class Request
 
     public function setMethod($method)
     {
-        $this->curl->setMethod($method);
+        $this->method = $method;
 
         return $this;
     }
 
     public function perform()
     {
-        $this->curl->setMethod(CurlWrapper::METHOD_GET);
         $url = $this->buildUrl($this->path);
-        $this->curl->setUrl($url);
         $headers = $this->getSignHeaders();
-        $this->curl->setRequestHeaders($headers->getElements());
+        $response = false;
+        $options = array();
+        $method = strtolower($this->method);
 
-        return $this->curl->perform();
+        switch ($this->method) {
+            case Requests::GET:
+                $response = $this->requestWrapper->$method($url, $headers, $options);
+                break;
+            default:
+                throw new \LogicException("HTTP method '{$this->method}' is not supported.");
+        }
+
+        return $response;
     }
 
     public function getQueryParameters()
@@ -60,8 +66,7 @@ class Request
 
     public function addQueryParameter($name, $value)
     {
-        $parameter = new QueryParameter($name, $value);
-        $this->queryParameters->add($parameter);
+        $this->queryParameters[$name] = $value;
 
         return $this;
     }
@@ -69,10 +74,14 @@ class Request
     protected function buildUrl($path)
     {
         $url = sprintf('http://%s/%s', $this->getApiHost(), $path);
+        $queryString = '';
 
-        $parameters = $this->getQueryParameters();
-        if (!(is_null($parameters) || $parameters->isEmpty())) {
-            $url .= '?' . $parameters;
+        foreach ($this->queryParameters as $name => $value) {
+            $queryString .= $name . '=' . $value;
+        }
+
+        if ($queryString) {
+            $url .= '?' . $queryString;
         }
 
         return $url;
@@ -82,11 +91,9 @@ class Request
     {
         $payload = '';
         if (!is_null($this->getQueryParameters())) {
-            $data = $this->queryParameters->getElements(false);
+            $data = $this->queryParameters;
             ksort($data);
-            foreach ($data as $parameter) {
-                $k = $parameter->getName();
-                $v = $parameter->getValue();
+            foreach ($data as $k => $v) {
                 if (substr($v, 0, 1) !== '@') {
                     $payload .= $k . $v;
                 }
@@ -109,11 +116,10 @@ class Request
         $user = $this->getApiUser();
         $signature = $this->getSignature();
 
-        $userHeader = new HttpHeader('X-Keymedia-Username', $user);
-        $sigHeader = new HttpHeader('X-Keymedia-Signature', $signature);
-        $headers = new ParameterContainer(': ');
-        $headers->add($userHeader);
-        $headers->add($sigHeader);
+        $headers = array(
+            'X-Keymedia-Username' => $user,
+            'X-Keymedia-Signature' => $signature
+        );
 
         return $headers;
     }
