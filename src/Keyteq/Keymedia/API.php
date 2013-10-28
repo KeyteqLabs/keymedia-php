@@ -3,9 +3,11 @@
 namespace Keyteq\Keymedia;
 
 use Keyteq\Keymedia\Util\RequestSigner;
+use Keyteq\Keymedia\Util\RequestWrapper;
 use Keyteq\Keymedia\API\Request;
 use Keyteq\Keymedia\API\Configuration;
 use Keyteq\Keymedia\API\RestConnector;
+use Keyteq\Keymedia\Model\Media;
 
 class API
 {
@@ -71,8 +73,8 @@ class API
 
     protected function request($path, array $parameters = array(), $decodeJson = true)
     {
-        $request = new Request($this->getApiConfig(), new RequestSigner(), new Util\RequestWrapper());
-        $request->setPath($path);
+        $request = new Request($this->getApiConfig(), new RequestSigner(), new RequestWrapper());
+        $request->setUrl('http://'.$path); // FIXME: This method gets wrong param path instead of URL
 
         foreach ($parameters as $k => $v) {
             $request->addQueryParameter($k, $v);
@@ -93,7 +95,7 @@ class API
 
     protected function parseMediaResponse($response)
     {
-        $parsed = json_decode($response, true);
+        $parsed = json_decode($response->body, true);
 
         if (!array_key_exists('media', $parsed)) {
             throw new \InvalidArgumentException();

@@ -3,6 +3,8 @@
 namespace Keyteq\Keymedia\API;
 
 use Keyteq\Keymedia\API\Configuration;
+use Keyteq\Keymedia\Util\RequestSigner;
+use Keyteq\Keymedia\Util\RequestWrapper;
 
 class RestConnector
 {
@@ -30,7 +32,7 @@ class RestConnector
         $path = "{$resourceName}.json";
         $url = $this->buildUrl($path, $parameters);
 
-        $request = new Request($this->config, $this->signer, $this->wrapper);
+        $request = new Request($this->config, new RequestSigner(), new RequestWrapper());
         $request->setMethod('GET')->setUrl($url);
 
         return $request->perform();
