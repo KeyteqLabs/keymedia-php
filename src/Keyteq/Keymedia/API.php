@@ -59,8 +59,14 @@ class API
     public function listAlbums()
     {
         $path = 'tags.json';
-
-        return $this->request($path);
+        $response = $this->request($path);
+        
+        $responseObj = json_decode($response, true);
+        $albums = array();
+        foreach($responseObj['tags'] as $obj) {
+            $albums[] = new Album($obj);
+        }
+        return $albums;
     }
 
     protected function request($path, array $parameters = array(), $decodeJson = true)

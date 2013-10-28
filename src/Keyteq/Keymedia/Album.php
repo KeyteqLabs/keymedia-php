@@ -4,15 +4,12 @@ namespace Keyteq\Keymedia;
 
 class Album
 {
-    protected $rawJson;
-
     protected $name;
     protected $total;
 
     public function __construct($json)
     {
         if ($json) {
-            $this->rawJson = $json;
             $parsed = json_decode($json, true);
             if (is_null($parsed)) {
                 throw new \InvalidArgumentException('Malformed JSON passed');
