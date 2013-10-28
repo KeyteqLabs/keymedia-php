@@ -64,12 +64,12 @@ class MediaTest extends \PHPUnit_Framework_TestCase
         $type = 'image/png';
         $id = 'media_id';
         $width = $height = 100;
-        $host = 'keymedia.dev';
+        $host = 'http://keymedia.dev';
 
         $json = sprintf('{"media":{"_id":"%s","host":"%s","file":{"type":"%s"}}}', $id, $host, $type);
         $media = new Media($json);
 
-        $expected = "http://{$host}/{$width}x{$height}/{$id}.png";
+        $expected = "{$host}/{$width}x{$height}/{$id}.png";
         $actual = $media->getThumbnailUrl($width, $height);
 
         $this->assertEquals($expected, $actual);
@@ -95,12 +95,12 @@ class MediaTest extends \PHPUnit_Framework_TestCase
     public function testGetTypeThumbnaulUrl()
     {
         $ending = '.mov';
-        $host = 'keymedia.dev';
+        $host = 'http://keymedia.dev';
 
         $json = sprintf('{"media":{"host":"%s","file":{"type":"video/quicktime","ending":"%s"}}}', $host, $ending);
         $media = new Media($json);
 
-        $expected = "http://{$host}/images/filetypes/movie.png";
+        $expected = "{$host}/images/filetypes/movie.png";
         $actual = $media->getThumbnailUrl();
 
         $this->assertEquals($expected, $actual);
@@ -109,12 +109,12 @@ class MediaTest extends \PHPUnit_Framework_TestCase
     public function testGetTypeThumbnaulUrlFallback()
     {
         $ending = '.unknown';
-        $host = 'keymedia.dev';
+        $host = 'http://keymedia.dev';
 
         $json = sprintf('{"media":{"host":"%s","file":{"type":"unknown/type","ending":"%s"}}}', $host, $ending);
         $media = new Media($json);
 
-        $expected = "http://{$host}/images/filetypes/fileicon_bg.png";
+        $expected = "{$host}/images/filetypes/fileicon_bg.png";
         $actual = $media->getThumbnailUrl();
 
         $this->assertEquals($expected, $actual);

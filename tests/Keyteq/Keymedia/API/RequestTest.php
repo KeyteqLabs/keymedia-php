@@ -10,7 +10,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     protected $apiKey = 'test_api_key';
     protected $apiUser = 'test_user';
-    protected $apiHost = 'test_host';
+    protected $apiHost = 'http://test_host';
 
     public function tearDown()
     {
@@ -43,7 +43,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $queryKey = 'name';
         $queryValue = 'value';
         $path = 'test_path';
-        $url = "http://{$this->apiHost}/{$path}?{$queryKey}={$queryValue}";
+        $url = "{$this->apiHost}/{$path}?{$queryKey}={$queryValue}";
         $payload = $queryKey . $queryValue;
         $signature = 'test_signature';
         $signer = $this->getSignerMock($payload, $signature);

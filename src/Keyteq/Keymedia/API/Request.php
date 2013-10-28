@@ -42,7 +42,7 @@ class Request
 
     public function perform()
     {
-        $url = $this->buildUrl($this->path);
+        $url = $this->buildUrl($this->getApiHost(), $this->path, $this->queryParameters);
         $headers = $this->getSignHeaders();
         $response = false;
         $options = array();
@@ -71,12 +71,12 @@ class Request
         return $this;
     }
 
-    protected function buildUrl($path)
+    public static function buildUrl($host, $path, $queryParameters = array())
     {
-        $url = sprintf('http://%s/%s', $this->getApiHost(), $path);
+        $url = sprintf('%s/%s', $host, $path);
         $queryString = '';
 
-        foreach ($this->queryParameters as $name => $value) {
+        foreach ($queryParameters as $name => $value) {
             $queryString .= $name . '=' . $value;
         }
 

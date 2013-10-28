@@ -141,7 +141,7 @@ class Media
 
     protected function buildUrl($path)
     {
-        $url = sprintf('http://%s/%s', $this->host, $path);
+        $url = sprintf('%s/%s', $this->host, $path);
 
         return $url;
     }
