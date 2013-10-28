@@ -2,13 +2,21 @@
 
 namespace Keyteq\Keymedia;
 
+use Keyteq\Keymedia\API\Configuration;
+
 class KeymediaClient
 {
     protected $api;
 
-    public function __construct($apiUser, $apiKey, $apiHost)
+    public function __construct($apiUser, $apiKey, $apiUrl)
     {
-        $this->api = new API($apiUser, $apiKey, $apiHost);
+        $options = array(
+            compact('apiUser'),
+            compact('apiKey'),
+            compact('apiUrl')
+        );
+        $config = new Configuration($options);
+        $this->api = new API($config);
     }
 
     public function getMedia($mediaId)
@@ -18,13 +26,11 @@ class KeymediaClient
 
     public function listAlbums()
     {
-        // array(KeymediaAlbum => name, total)
         return $this->api->listAlbums();
     }
 
-    public function listMedia($thumbnailWidth = null, $thumbnailHeight = null, $album = '', $search = '')
+    public function listMedia($album = false, $search = false)
     {
-        return $this->api->listMedia($thumbnailHeight, $thumbnailWidth, $album, $search);
-        // array(KeymediaItem => mediaId, name, type, isImage, url, thumbnailUrl)
+        return $this->api->listMedia($album, $search);
     }
 }
