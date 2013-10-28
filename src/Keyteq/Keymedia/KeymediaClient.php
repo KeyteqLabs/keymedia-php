@@ -12,7 +12,8 @@ class KeymediaClient
     {
         $options = compact('apiUser', 'apiKey', 'apiUrl');
         $config = new Configuration($options);
-        $this->api = new API($config);
+        $connector = new API\RestConnector($config);
+        $this->api = new API($config, $connector);
     }
 
     public function getMedia($mediaId)
