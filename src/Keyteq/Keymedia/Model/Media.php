@@ -1,49 +1,15 @@
 <?php
 
-namespace Keyteq\Keymedia;
+namespace Keyteq\Keymedia\Model;
 
-class Media
+use Keyteq\Keymedia\API\Request;
+
+class Media extends Item
 {
-
-    protected $rawJson;
-
     protected $_id;
-    protected $attributes = array();
-    protected $created;
-    protected $modified;
     protected $file;
     protected $name;
-    protected $slug;
-    protected $tags = array();
-    protected $status;
     protected $host;
-    protected $scalesTo;
-    protected $user;
-    protected $version;
-    protected $shareUrl;
-
-    public function __construct($json)
-    {
-        if ($json) {
-            $this->rawJson = $json;
-            $parsed = json_decode($json, true);
-            if (is_null($parsed)) {
-                throw new \InvalidArgumentException('Malformed JSON passed');
-            }
-
-            if (!array_key_exists('media', $parsed)) {
-                throw new \InvalidArgumentException('Key "media" not found in JSON');
-            }
-
-            foreach ($parsed['media'] as $key => $value) {
-                if (property_exists($this, $key)) {
-                    $this->$key = $value;
-                }
-            }
-        } else {
-            throw new \InvalidArgumentException('No JSON provided!');
-        }
-    }
 
     public function getId()
     {
@@ -68,6 +34,11 @@ class Media
     public function getUrl()
     {
         return $this->file['url'];
+    }
+
+    protected function getHost($protocol = 'http')
+    {
+        return "{$protocol}://{$this->host}";
     }
 
     protected function getGeneralType()
@@ -151,8 +122,6 @@ class Media
 
     protected function buildUrl($path)
     {
-        $url = sprintf('%s/%s', $this->host, $path);
-
-        return $url;
+        return Request::buildUrl($this->getHost(), $path);
     }
 }
