@@ -2,23 +2,25 @@
 
 namespace Keyteq\Keymedia;
 
+use Keyteq\Keymedia\API\Configuration;
 use \Mockery as m;
 
 class APITest extends \PHPUnit_Framework_TestCase
 {
-
-    protected $apiKey;
-    protected $apiHost;
-    protected $apiUser;
+    protected $apiConfig;
     protected $api;
 
     public function setUp()
     {
         parent::setUp();
-        $this->apiKey = 'test_api_key';
-        $this->apiHost = 'm.keymedia.dev';
-        $this->apiUser = 'admin@keyteq.no';
-        $this->api = new API($this->apiUser, $this->apiKey, $this->apiHost);
+        $options = array(
+            'apiKey' => 'test_api_key',
+            'apiUrl' => 'http://m.keymedia.dev',
+            'apiUser' => 'test_user'
+        );
+        $this->apiConfig = new Configuration($options);
+        $this->rest = m::mock('\Keyteq\Keymedia\API\RestConnector');
+        $this->api = new API($this->apiConfig, $this->rest);
     }
 
     public function tearDown()
@@ -27,32 +29,11 @@ class APITest extends \PHPUnit_Framework_TestCase
         m::close();
     }
 
-    public function testConstructSetsApiUser()
-    {
-        $user = 'some_user';
-        $api = new API($user, 'key', 'host');
-        $this->assertEquals($user, $api->getApiUser());
-    }
-
-    public function testConstructSetsApiKey()
-    {
-        $key = 'some_key';
-        $api = new API('some_user', $key, 'some_host');
-        $this->assertEquals($key, $api->getApiKey());
-    }
-
-    public function testConstructSetsApiHost()
-    {
-        $host = 'some_host';
-        $api = new API('some_user', 'some_key', $host);
-        $this->assertEquals($host, $api->getApiHost());
-    }
-
     /**
      * @expectedException \Exception
-     * @expectedExceptionMessage Missing argument 1
+     * @expectedExceptionMessage Configuration
      */
-    public function testConstructRequiresArgument()
+    public function testConstructRequiresConfigurationArgument()
     {
         new API();
     }

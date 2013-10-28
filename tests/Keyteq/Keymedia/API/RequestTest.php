@@ -7,10 +7,18 @@ use Keyteq\Keymedia\API\Request;
 
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
+    protected $apiConfig;
 
-    protected $apiKey = 'test_api_key';
-    protected $apiUser = 'test_user';
-    protected $apiHost = 'http://test_host';
+    public function setUp()
+    {
+        parent::setUp();
+        $options = array(
+            'apiUrl' => 'http://m.keymedia.dev',
+            'apiUser' => 'keymedia-user',
+            'apiKey' => 'keymedia-key'
+        );
+        $this->apiConfig = new Configuration($options);
+    }
 
     public function tearDown()
     {
@@ -33,7 +41,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             ->withAnyArgs()
             ->getMock();
 
-        $request = new Request($this->getApiConfig(), $signer, $requestWrapper);
+        $request = new Request($this->apiConfig, $signer, $requestWrapper);
+        $request->setUrl('http://m.keymedia.dev');
         $request->addQueryParameter($queryKey, $queryValue);
         $request->perform();
     }
@@ -43,20 +52,20 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $queryKey = 'name';
         $queryValue = 'value';
         $path = 'test_path';
-        $url = "{$this->apiHost}/{$path}?{$queryKey}={$queryValue}";
+        $url = "{$this->apiConfig->getApiUrl()}/{$path}?{$queryKey}={$queryValue}";
         $payload = $queryKey . $queryValue;
         $signature = 'test_signature';
         $signer = $this->getSignerMock($payload, $signature);
 
         $headers = array(
-            'X-Keymedia-Username' => $this->apiUser,
+            'X-Keymedia-Username' => $this->apiConfig->getApiUser(),
             'X-Keymedia-Signature' => $signature
         );
 
         $requestWrapper = $this->getRequestWrapperMock('get', 1, array($url, $headers, array()));
 
         $request = new Request($this->getApiConfig(), $signer, $requestWrapper);
-        $request->setPath($path)->addQueryParameter($queryKey, $queryValue)->perform();
+        $request->setUrl($url)->addQueryParameter($queryKey, $queryValue)->perform();
     }
 
     public function testPerformReturnsTheResponse()
@@ -68,7 +77,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $wrapper = $this->getRequestWrapperMock('get', 1, false, $expected);
         $request = new Request($apiConfig, $signer, $wrapper);
 
-        $actual = $request->perform();
+        $actual = $request->setUrl('http://localhost')->perform();
 
         $this->assertSame($expected, $actual);
     }
@@ -105,7 +114,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $signer = m::mock('\Keyteq\Keymedia\Util\RequestSigner')
             ->shouldReceive('getSignature')
             ->once()
-            ->with($payload, $this->apiKey)
+            ->with($payload, $this->apiConfig->getApiKey())
             ->andReturn($signature)
             ->getMock();
 
@@ -114,10 +123,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     protected function getApiConfig()
     {
-        return array(
-            'apiUser' => $this->apiUser,
-            'apiKey' => $this->apiKey,
-            'apiHost' => $this->apiHost
-        );
+        return $this->apiConfig;
     }
 }

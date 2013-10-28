@@ -4,31 +4,37 @@ namespace Keyteq\Keymedia\API;
 
 use Keyteq\Keymedia\Util\RequestWrapper;
 use Keyteq\Keymedia\Util\RequestSigner;
+use Keyteq\Keymedia\API\Configuration;
 use \Requests;
 
 class Request
 {
-    protected $apiUser;
-    protected $apiKey;
-    protected $apiHost;
+    protected $config;
     protected $method = Requests::GET;
-    protected $path = '';
+    protected $url = '';
     protected $signer;
     protected $requestWrapper;
     protected $queryParameters = array();
 
-    public function __construct(array $apiConfig, RequestSigner $signer, RequestWrapper $requestWrapper)
+    public function __construct(Configuration $config, RequestSigner $signer, RequestWrapper $requestWrapper)
     {
-        $this->apiUser = $apiConfig['apiUser'];
-        $this->apiKey = $apiConfig['apiKey'];
-        $this->apiHost = $apiConfig['apiHost'];
+        $this->config = $config;
         $this->signer = $signer;
         $this->requestWrapper = $requestWrapper;
     }
 
-    public function setPath($path)
+    public function setUrl($url)
     {
-        $this->path = $path;
+        $this->url = $url;
+        $parsed = parse_url($url);
+
+        if (false === $parsed) {
+            throw new \InvalidArgumentException('Malformed URL!');
+        }
+
+        if (array_key_exists('query', $parsed)) {
+            $this->parseQuery($parsed['query']);
+        }
 
         return $this;
     }
@@ -42,15 +48,15 @@ class Request
 
     public function perform()
     {
-        $url = $this->buildUrl($this->getApiHost(), $this->path, $this->queryParameters);
         $headers = $this->getSignHeaders();
+        $wrapper = $this->requestWrapper;
         $response = false;
         $options = array();
         $method = strtolower($this->method);
 
         switch ($this->method) {
             case Requests::GET:
-                $response = $this->requestWrapper->$method($url, $headers, $options);
+                $response = $wrapper->$method($this->url, $headers, $options);
                 break;
             default:
                 throw new \LogicException("HTTP method '{$this->method}' is not supported.");
@@ -107,7 +113,6 @@ class Request
     {
         $payload = $this->getPayload();
         $key = $this->getApiKey();
-
         return $this->signer->getSignature($payload, $key);
     }
 
@@ -126,16 +131,25 @@ class Request
 
     protected function getApiKey()
     {
-        return $this->apiKey;
+        return $this->config->getApiKey();
     }
 
     protected function getApiHost()
     {
-        return $this->apiHost;
+        return $this->config->getApiHost();
     }
 
     protected function getApiUser()
     {
-        return $this->apiUser;
+        return $this->config->getApiUser();
     }
+
+    protected function parseQuery($query)
+    {
+        $items = explode('&', $query);
+        foreach ($items as $item) {
+            list($name, $value) = explode('=', $item);
+            $this->addQueryParameter($name, $value);
+        }
+     }
 }

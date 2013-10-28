@@ -4,42 +4,41 @@ namespace Keyteq\Keymedia;
 
 use Keyteq\Keymedia\Util\RequestSigner;
 use Keyteq\Keymedia\API\Request;
+use Keyteq\Keymedia\API\Configuration;
+use Keyteq\Keymedia\API\RestConnector;
 
 class API
 {
-    protected $apiKey;
-    protected $apiHost;
-    protected $apiUser;
-    protected $curl;
-    protected $signer;
+    protected $apiConfig;
+    protected $connector;
 
-    public function __construct($apiUser, $apiKey, $apiHost)
+
+    public function __construct(Configuration $config, RestConnector $connector)
     {
-        $this->apiUser = $apiUser;
-        $this->apiKey = $apiKey;
-        $this->apiHost = $apiHost;
-        $this->signer = new RequestSigner($apiUser, $apiKey);
+        $this->apiConfig = $config;
+        $this->connector = $connector;
     }
 
-    public function getApiUser()
+    public function getApiConfig()
     {
-        return $this->apiUser;
+        return $this->apiConfig;
     }
 
-    public function getApiKey()
+    public function listMedia($album = false, $search = false)
     {
-        return $this->apiKey;
-    }
+        $parameters = array();
 
-    public function getApiHost()
-    {
-        return $this->apiHost;
-    }
+        if ($search) {
+            $parameters['q'] = $search;
+        }
 
-    public function listMedia($thumbnailHeight, $thumbnailWidth, $album, $search)
-    {
-        // TODO
-        return $this->request('media.json');
+        if ($album) {
+            $parameters['tags'] = $album;
+        }
+
+        $response = $this->connector->getCollection('media', $parameters);
+
+        return $this->parseMediaResponse($response);
     }
 
     public function findMediaByName($q)
@@ -61,7 +60,7 @@ class API
     {
         $path = 'tags.json';
         $response = $this->request($path);
-        
+
         $responseObj = json_decode($response, true);
         $albums = array();
         foreach($responseObj['tags'] as $obj) {
@@ -92,12 +91,20 @@ class API
         return new Media($json);
     }
 
-    protected function getApiConfig()
+    protected function parseMediaResponse($response)
     {
-        return array(
-            'apiUser' => $this->getApiUser(),
-            'apiKey' => $this->getApiKey(),
-            'apiHost' => $this->getApiHost()
-        );
+        $parsed = json_decode($response, true);
+
+        if (!array_key_exists('media', $parsed)) {
+            throw new \InvalidArgumentException();
+        }
+
+        $media = array();
+
+        foreach ($parsed['media'] as $data) {
+            $media[]= new Media($data);
+        }
+
+        return $media;
     }
 }
