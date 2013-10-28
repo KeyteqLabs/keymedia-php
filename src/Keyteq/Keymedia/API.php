@@ -71,7 +71,7 @@ class API
 
     protected function request($path, array $parameters = array(), $decodeJson = true)
     {
-        $request = new Request($this->getApiConfig(), new RequestSigner());
+        $request = new Request($this->getApiConfig(), new RequestSigner(), new Util\RequestWrapper());
         $request->setPath($path);
 
         foreach ($parameters as $k => $v) {
