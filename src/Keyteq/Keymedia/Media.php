@@ -45,6 +45,16 @@ class Media
         }
     }
 
+    public function getId()
+    {
+        return $this->_id;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
     public function getType()
     {
         return $this->file['type'];
