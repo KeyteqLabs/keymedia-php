@@ -10,11 +10,7 @@ class KeymediaClient
 
     public function __construct($apiUser, $apiKey, $apiUrl)
     {
-        $options = array(
-            compact('apiUser'),
-            compact('apiKey'),
-            compact('apiUrl')
-        );
+        $options = compact('apiUser', 'apiKey', 'apiUrl');
         $config = new Configuration($options);
         $this->api = new API($config);
     }
