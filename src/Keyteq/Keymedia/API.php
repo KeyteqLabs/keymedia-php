@@ -36,9 +36,10 @@ class API
         return $this->apiHost;
     }
 
-    public function listMedia($parameters = array())
+    public function listMedia($thumbnailHeight, $thumbnailWidth, $album, $search)
     {
-        return $this->request('media.json', $parameters);
+        // TODO
+        return $this->request('media.json');
     }
 
     public function findMediaByName($q)
