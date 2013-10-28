@@ -35,6 +35,12 @@ class KeymediaClient
 
     public function listAlbums()
     {
+        // array(KeymediaAlbum => name, total)
         return $this->api->listAlbums();
+    }
+
+    public function listMedia($thumbnailWidth = null, $thumbnailHeight = null, $album = '', $search = '')
+    {
+        // array(KeymediaItem => mediaId, name, type, isImage, url, thumbnailUrl)
     }
 }
