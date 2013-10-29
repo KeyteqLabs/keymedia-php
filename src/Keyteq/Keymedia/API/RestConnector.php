@@ -9,44 +9,47 @@ use Keyteq\Keymedia\Util\RequestWrapper;
 class RestConnector
 {
     protected $config;
-    protected $signer;
-    protected $wrapper;
 
     public function __construct(Configuration $config)
     {
         $this->config = $config;
     }
 
-    public function getResource($resourceName, $resourceId, $parameters = array())
+    public function getResource($resourceName, $resourceId, array $parameters = array())
     {
         $path = "{$resourceName}/{$resourceId}.json";
         $url = $this->buildUrl($path, $parameters);
-        $request = new Request($this->config, $this->signer, $this->wrapper);
-        $request->setMethod('GET')->setUrl($url);
+        $request = $this->buildRequest($url, $parameters);
 
         return $request->perform();
     }
 
-    public function getCollection($resourceName, $parameters = array())
+    public function getCollection($resourceName, array $parameters = array())
     {
         $path = "{$resourceName}.json";
         $url = $this->buildUrl($path, $parameters);
-
-        $request = new Request($this->config, new RequestSigner(), new RequestWrapper());
-        $request->setMethod('GET')->setUrl($url);
+        $request = $this->buildRequest($url, $parameters);
 
         return $request->perform();
     }
 
-    protected function buildUrl($path = '', $parameters = array())
+    protected function buildUrl($path = '')
     {
         $rootUrl = $this->config->getApiUrl();
         $url = "{$rootUrl}/{$path}";
 
-        if (!empty($parameters)) {
-            $url .= '?' . http_build_query($parameters);
+        return $url;
+    }
+
+    protected function buildRequest($url, array $parameters = array())
+    {
+        $request = new Request($this->config, new RequestSigner(), new RequestWrapper());
+        $request->setMethod('GET')->setUrl($url);
+
+        foreach ($parameters as $name => $value) {
+            $request->addQueryParameter($name, $value);
         }
 
-        return $url;
+        return $request;
     }
 }
