@@ -3,6 +3,7 @@
 namespace Keyteq\Keymedia;
 
 use Keyteq\Keymedia\API\Configuration;
+use Keyteq\Keymedia\Model\Mapper\MapperFactory;
 
 class KeymediaClient
 {
@@ -13,7 +14,8 @@ class KeymediaClient
         $options = compact('apiUser', 'apiKey', 'apiUrl');
         $config = new Configuration($options);
         $connector = new API\RestConnector($config);
-        $this->api = new API($config, $connector);
+        $mapperFactory = new MapperFactory();
+        $this->api = new API($config, $connector, $mapperFactory);
     }
 
     public function getMedia($mediaId)

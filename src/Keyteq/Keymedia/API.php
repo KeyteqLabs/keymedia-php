@@ -2,23 +2,25 @@
 
 namespace Keyteq\Keymedia;
 
-use Keyteq\Keymedia\Util\RequestSigner;
-use Keyteq\Keymedia\Util\RequestWrapper;
-use Keyteq\Keymedia\API\Request;
 use Keyteq\Keymedia\API\Configuration;
 use Keyteq\Keymedia\API\RestConnector;
-use Keyteq\Keymedia\Model\Media;
+use Keyteq\Keymedia\Model\Mapper\MapperFactory;
 
 class API
 {
     protected $apiConfig;
     protected $connector;
+    protected $mapperFactory;
+    protected $mediaMapper;
+    protected $albumMapper;
 
-
-    public function __construct(Configuration $config, RestConnector $connector)
+    public function __construct(Configuration $config, RestConnector $connector, MapperFactory $mapperFactory)
     {
         $this->apiConfig = $config;
         $this->connector = $connector;
+        $this->mapperFactory = $mapperFactory;
+        $this->mediaMapper = $mapperFactory->getMediaMapper();
+        $this->albumMapper = $mapperFactory->getAlbumMapper();
     }
 
     public function getApiConfig()
@@ -39,8 +41,9 @@ class API
         }
 
         $response = $this->connector->getCollection('media', $parameters);
+        $result = $this->mediaMapper->mapCollection($response);
 
-        return $this->parseMediaResponse($response);
+        return $result;
     }
 
     public function findMediaByName($q)
@@ -60,53 +63,17 @@ class API
 
     public function listAlbums()
     {
-        $path = 'tags.json';
-        $response = $this->request($path);
+        $response = $this->connector->getCollection('tags');
+        $result = $this->albumMapper->mapCollection($response);
 
-        $responseObj = json_decode($response, true);
-        $albums = array();
-        foreach($responseObj['tags'] as $obj) {
-            $albums[] = new Album($obj);
-        }
-        return $albums;
-    }
-
-    protected function request($path, array $parameters = array(), $decodeJson = true)
-    {
-        $request = new Request($this->getApiConfig(), new RequestSigner(), new RequestWrapper());
-        $request->setUrl('http://'.$path); // FIXME: This method gets wrong param path instead of URL
-
-        foreach ($parameters as $k => $v) {
-            $request->addQueryParameter($k, $v);
-        }
-
-        $response = $request->perform();
-
-        return $decodeJson ? json_decode($response, true) : $response;
+        return $result;
     }
 
     public function getMedia($id)
     {
-        $path = "media/{$id}.json";
-        $json = $this->request($path, array(), false);
+        $response = $this->connector->getResource('media', $id);
+        $result = $this->mediaMapper->mapItem($response);
 
-        return new Media($json);
-    }
-
-    protected function parseMediaResponse($response)
-    {
-        $parsed = json_decode($response->body, true);
-
-        if (!array_key_exists('media', $parsed)) {
-            throw new \InvalidArgumentException();
-        }
-
-        $media = array();
-
-        foreach ($parsed['media'] as $data) {
-            $media[]= new Media($data);
-        }
-
-        return $media;
+        return $result;
     }
 }

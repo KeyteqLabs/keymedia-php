@@ -8,19 +8,16 @@ use \Mockery as m;
 class APITest extends \PHPUnit_Framework_TestCase
 {
     protected $apiConfig;
-    protected $api;
 
     public function setUp()
     {
         parent::setUp();
         $options = array(
             'apiKey' => 'test_api_key',
-            'apiUrl' => 'http://m.keymedia.dev',
+            'apiUrl' => 'http://test.host',
             'apiUser' => 'test_user'
         );
         $this->apiConfig = new Configuration($options);
-        $this->rest = m::mock('\Keyteq\Keymedia\API\RestConnector');
-        $this->api = new API($this->apiConfig, $this->rest);
     }
 
     public function tearDown()
@@ -38,9 +35,76 @@ class APITest extends \PHPUnit_Framework_TestCase
         new API();
     }
 
-    public function testListMedia()
+    public function testListMediaWithNoArguments()
     {
-        $this->markTestIncomplete('Pending curl wrapper extraction');
+        $response = new \stdClass();
+        $expected = new \stdClass();
+        $restMocks = array(
+            'getCollection' => array(
+                'args' => array('media', array()),
+                'count' => 1,
+                'return' => $response
+            )
+        );
+
+        $rest = $this->getRestConnectorMock($restMocks);
+        $mediaMapper = $this->getMapperMock('Media', 'Collection', array($response), $expected);
+        $factoryMocks = array('getMediaMapper' => $mediaMapper);
+        $mapperFactory = $this->getMapperFactoryMock($factoryMocks);
+        $api = new API($this->apiConfig, $rest, $mapperFactory);
+
+        $actual = $api->listMedia();
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testListMediaWithAlbum()
+    {
+        $albumName = 'album_name';
+        $response = new \stdClass();
+        $expected = new \stdClass();
+        $restMocks = array(
+            'getCollection' => array(
+                'args' => array('media', array('tags' => $albumName)),
+                'count' => 1,
+                'return' => $response
+            )
+        );
+
+        $rest = $this->getRestConnectorMock($restMocks);
+        $mediaMapper = $this->getMapperMock('Media', 'Collection', array($response), $expected);
+        $factoryMocks = array('getMediaMapper' => $mediaMapper);
+        $mapperFactory = $this->getMapperFactoryMock($factoryMocks);
+        $api = new API($this->apiConfig, $rest, $mapperFactory);
+
+        $actual = $api->listMedia($albumName);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testListMediaWithAlbumAndSearch()
+    {
+        $albumName = 'album_name';
+        $search = 'search_term';
+        $response = new \stdClass();
+        $expected = new \stdClass();
+        $restMocks = array(
+            'getCollection' => array(
+                'args' => array('media', array('tags' => $albumName, 'q' => $search)),
+                'count' => 1,
+                'return' => $response
+            )
+        );
+
+        $rest = $this->getRestConnectorMock($restMocks);
+        $mediaMapper = $this->getMapperMock('Media', 'Collection', array($response), $expected);
+        $factoryMocks = array('getMediaMapper' => $mediaMapper);
+        $mapperFactory = $this->getMapperFactoryMock($factoryMocks);
+        $api = new API($this->apiConfig, $rest, $mapperFactory);
+
+        $actual = $api->listMedia($albumName, $search);
+
+        $this->assertSame($expected, $actual);
     }
 
     public function testFindMedia()
@@ -86,6 +150,64 @@ class APITest extends \PHPUnit_Framework_TestCase
 
     public function testGetMedia()
     {
-        $this->markTestIncomplete('Pending curl wrapper extraction');
+        $mediaId = 'media_id';
+        $response = new \stdClass();
+        $expected = new \stdClass();
+        $restMocks = array(
+            'getResource' => array(
+                'args' => array('media', $mediaId),
+                'count' => 1,
+                'return' => $response
+            )
+        );
+
+        $rest = $this->getRestConnectorMock($restMocks);
+        $mediaMapper = $this->getMapperMock('Media', 'Item', array($response), $expected);
+        $factoryMocks = array('getMediaMapper' => $mediaMapper);
+        $mapperFactory = $this->getMapperFactoryMock($factoryMocks);
+        $api = new API($this->apiConfig, $rest, $mapperFactory);
+
+        $actual = $api->getMedia($mediaId);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    protected function getMapperMock($type, $mode, array $input, $output)
+    {
+        $mapper = m::mock("\Keyteq\Keymedia\Model\Mapper\\{$type}Mapper")
+            ->shouldReceive("map{$mode}")
+            ->once()
+            ->withArgs($input)
+            ->andReturn($output);
+        return $mapper->getMock();
+    }
+
+    protected function getMapperFactoryMock(array $mocks)
+    {
+        $factory = m::mock('\Keyteq\Keymedia\Model\Mapper\MapperFactory')
+            ->makePartial();
+
+        foreach ($mocks as $method => $output) {
+            $factory->shouldReceive($method)
+                ->once()
+                ->andReturn($output);
+        }
+
+        return $factory;
+    }
+
+    protected function getRestConnectorMock($mocks)
+    {
+        $rest = m::mock('\Keyteq\Keymedia\API\RestConnector')
+            ->shouldIgnoreMissing();
+
+        foreach ($mocks as $method => $options) {
+            $rest->shouldReceive($method)
+                ->withArgs($options['args'])
+                ->times($options['count'])
+                ->andReturn($options['return']);
+        }
+
+        return $rest;
     }
 }
