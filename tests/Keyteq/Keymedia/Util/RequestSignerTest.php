@@ -2,7 +2,9 @@
 
 namespace Keyteq\Keymedia\Util;
 
-class RequestSignerTest extends \PHPUnit_Framework_TestCase
+use Keyteq\Keymedia\BaseTest;
+
+class RequestSignerTest extends BaseTest
 {
 
     protected $apiUser;

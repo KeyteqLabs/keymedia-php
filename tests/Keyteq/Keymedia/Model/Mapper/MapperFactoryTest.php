@@ -2,7 +2,9 @@
 
 namespace Keyteq\Keymedia\Model\Mapper;
 
-class MapperFactoryTest extends \PHPUnit_Framework_TestCase
+use Keyteq\Keymedia\BaseTest;
+
+class MapperFactoryTest extends BaseTest
 {
     protected $factory;
 

@@ -2,7 +2,9 @@
 
 namespace Keyteq\Keymedia\Model\Mapper;
 
-class AlbumMapperTest extends \PHPUnit_Framework_TestCase
+use Keyteq\Keymedia\BaseTest;
+
+class AlbumMapperTest extends BaseTest
 {
     public function testConstruct()
     {

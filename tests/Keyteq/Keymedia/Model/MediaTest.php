@@ -2,7 +2,9 @@
 
 namespace Keyteq\Keymedia\Model;
 
-class MediaTest extends \PHPUnit_Framework_TestCase
+use Keyteq\Keymedia\BaseTest;
+
+class MediaTest extends BaseTest
 {
     public function testConstruct()
     {

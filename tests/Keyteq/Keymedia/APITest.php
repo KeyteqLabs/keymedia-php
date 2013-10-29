@@ -4,8 +4,9 @@ namespace Keyteq\Keymedia;
 
 use Keyteq\Keymedia\API\Configuration;
 use \Mockery as m;
+use Keyteq\Keymedia\BaseTest;
 
-class APITest extends \PHPUnit_Framework_TestCase
+class APITest extends BaseTest
 {
     protected $apiConfig;
 
@@ -18,12 +19,6 @@ class APITest extends \PHPUnit_Framework_TestCase
             'apiUser' => 'test_user'
         );
         $this->apiConfig = new Configuration($options);
-    }
-
-    public function tearDown()
-    {
-        parent::tearDown();
-        m::close();
     }
 
     /**

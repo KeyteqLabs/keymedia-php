@@ -2,7 +2,9 @@
 
 namespace Keyteq\Keymedia\API;
 
-class ConfigurationTest extends \PHPUnit_Framework_TestCase
+use Keyteq\Keymedia\BaseTest;
+
+class ConfigurationTest extends BaseTest
 {
 
     /**

@@ -2,8 +2,11 @@
 
 namespace Keyteq\Keymedia\Model\Mapper;
 
-class MediaMapperTest extends \PHPUnit_Framework_TestCase
+use Keyteq\Keymedia\BaseTest;
+
+class MediaMapperTest extends BaseTest
 {
+
     public function testConstruct()
     {
         $mapper = new MediaMapper();
