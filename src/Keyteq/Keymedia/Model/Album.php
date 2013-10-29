@@ -4,16 +4,16 @@ namespace Keyteq\Keymedia\Model;
 
 class Album extends Item
 {
-    protected $name;
-    protected $total;
+    protected $tag;
+    protected $count;
 
-    public function getName()
+    public function getTag()
     {
-        return $this->name;
+        return $this->tag;
     }
 
-    public function getTotal()
+    public function getCount()
     {
-        return $this->total;
+        return $this->count;
     }
 }
