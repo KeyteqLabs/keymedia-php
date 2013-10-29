@@ -9,6 +9,7 @@ class RequestWrapper
 {
     public function get($url, $headers = array(), $options = array())
     {
-        return \Requests::get($url, $headers, $options);
+        $request = \Requests::get($url, $headers, $options);
+        return $request->body;
     }
 }
