@@ -148,6 +148,29 @@ class APITest extends \PHPUnit_Framework_TestCase
         $api->getAlbum($albumName, $filter);
     }
 
+    public function testListAlbums()
+    {
+        $response = new \stdClass();
+        $expected = new \stdClass();
+        $restMocks = array(
+            'getCollection' => array(
+                'args' => array('tags'),
+                'count' => 1,
+                'return' => $response
+            )
+        );
+
+        $rest = $this->getRestConnectorMock($restMocks);
+        $albumMapper = $this->getMapperMock('Album', 'Collection', array($response), $expected);
+        $factoryMocks = array('getAlbumMapper' => $albumMapper);
+        $mapperFactory = $this->getMapperFactoryMock($factoryMocks);
+        $api = new API($this->apiConfig, $rest, $mapperFactory);
+
+        $actual = $api->listAlbums();
+
+        $this->assertSame($expected, $actual);
+    }
+
     public function testGetMedia()
     {
         $mediaId = 'media_id';
