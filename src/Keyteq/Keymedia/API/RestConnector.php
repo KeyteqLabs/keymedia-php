@@ -44,10 +44,7 @@ class RestConnector
         $url = "{$rootUrl}/{$path}";
 
         if (!empty($parameters)) {
-            $url .= '?';
-            foreach ($parameters as $k => $v) {
-                $url .= $k . '=' . $v;
-            }
+            $url .= '?' . http_build_query($parameters);
         }
 
         return $url;
