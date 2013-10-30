@@ -15,13 +15,7 @@ class RestConnectorTest extends BaseTest
         $resourceName = 'resource_name';
         $resourceId = 'resource_id';
         $url = static::API_URL . "/{$resourceName}/{$resourceId}.json";
-        $requestBuilder = m::mock('\Keyteq\Keymedia\Util\RequestBuilder')
-            ->shouldReceive('buildRequest')
-            ->once()
-            ->with($url, 'GET', array())
-            ->andReturn($request)
-            ->getMock();
-
+        $requestBuilder = $this->getRequestBuilderMock($url, 'GET', array(), $request);
         $rest = new RestConnector($this->apiConfig, $requestBuilder);
         $actual = $rest->getResource($resourceName, $resourceId);
 
@@ -35,13 +29,7 @@ class RestConnectorTest extends BaseTest
         $resourceName = 'collection_name';
         $url = static::API_URL . "/{$resourceName}.json";
         $parameters = array('k1' => 'v1', 'k2' => 'v2');
-        $requestBuilder = m::mock('\Keyteq\Keymedia\Util\RequestBuilder')
-            ->shouldReceive('buildRequest')
-            ->once()
-            ->with($url, 'GET', $parameters)
-            ->andReturn($request)
-            ->getMock();
-
+        $requestBuilder = $this->getRequestBuilderMock($url, 'GET', $parameters, $request);
         $rest = new RestConnector($this->apiConfig, $requestBuilder);
         $actual = $rest->getCollection($resourceName, $parameters);
 
@@ -57,5 +45,17 @@ class RestConnectorTest extends BaseTest
             ->getMock();
 
         return $request;
+    }
+
+    protected function getRequestBuilderMock($url, $method, array $parameters, $request)
+    {
+        $mock = m::mock('\Keyteq\Keymedia\Util\RequestBuilder')
+            ->shouldReceive('buildRequest')
+            ->once()
+            ->with($url, 'GET', $parameters)
+            ->andReturn($request)
+            ->getMock();
+
+        return $mock;
     }
 }
