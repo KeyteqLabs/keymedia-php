@@ -28,7 +28,7 @@ class RestConnector
     public function getCollection($resourceName, array $parameters = array())
     {
         $path = "{$resourceName}.json";
-        $url = $this->buildUrl($path, $parameters);
+        $url = $this->buildUrl($path);
         $request = $this->requestBuilder->buildRequest($url, 'GET', $parameters);
 
         return $request->perform();
