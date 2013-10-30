@@ -3,6 +3,7 @@
 namespace Keyteq\Keymedia\Util;
 
 use Keyteq\Keymedia\API\Configuration;
+use Keyteq\Keymedia\API\Request;
 
 class RequestBuilder
 {
