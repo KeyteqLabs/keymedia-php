@@ -12,14 +12,10 @@ abstract class Item
             }
         }
     }
-    
+
     public function toArray()
     {
-        $arr = array();
-        foreach($this as $key => $value) {
-            $arr[$key] = $value;
-        }
-        return $arr;
+        return get_object_vars($this);
     }
-    
+
 }
