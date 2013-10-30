@@ -3,23 +3,10 @@
 namespace Keyteq\Keymedia\API;
 
 use Keyteq\Keymedia\BaseTest;
-use Keyteq\Keymedia\API\Configuration;
 use \Mockery as m;
 
 class RestConnectorTest extends BaseTest
 {
-
-    const API_URL = 'http://test.host';
-    const API_USER = 'test_user';
-    const API_KEY = 'test_key';
-
-    protected $config;
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->config = $this->getApiConfig();
-    }
 
     public function testGetResource()
     {
@@ -35,7 +22,7 @@ class RestConnectorTest extends BaseTest
             ->andReturn($request)
             ->getMock();
 
-        $rest = new RestConnector($this->config, $requestBuilder);
+        $rest = new RestConnector($this->apiConfig, $requestBuilder);
         $actual = $rest->getResource($resourceName, $resourceId);
 
         $this->assertSame($expected, $actual);
@@ -55,21 +42,10 @@ class RestConnectorTest extends BaseTest
             ->andReturn($request)
             ->getMock();
 
-        $rest = new RestConnector($this->config, $requestBuilder);
+        $rest = new RestConnector($this->apiConfig, $requestBuilder);
         $actual = $rest->getCollection($resourceName, $parameters);
 
         $this->assertSame($expected, $actual);
-    }
-
-    protected function getApiConfig()
-    {
-        return new Configuration(
-            array(
-                'apiUrl' => static::API_URL,
-                'apiUser' => static::API_USER,
-                'apiKey' => static::API_KEY
-            )
-        );
     }
 
     protected function getRequestMock($returnValue)

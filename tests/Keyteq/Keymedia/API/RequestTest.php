@@ -8,18 +8,6 @@ use Keyteq\Keymedia\BaseTest;
 
 class RequestTest extends BaseTest
 {
-    protected $apiConfig;
-
-    public function setUp()
-    {
-        parent::setUp();
-        $options = array(
-            'apiUrl' => 'http://m.keymedia.dev',
-            'apiUser' => 'keymedia-user',
-            'apiKey' => 'keymedia-key'
-        );
-        $this->apiConfig = new Configuration($options);
-    }
 
     public function testPerformSignsRequests()
     {
@@ -114,10 +102,5 @@ class RequestTest extends BaseTest
             ->getMock();
 
         return $signer;
-    }
-
-    protected function getApiConfig()
-    {
-        return $this->apiConfig;
     }
 }

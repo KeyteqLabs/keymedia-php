@@ -8,19 +8,6 @@ use Keyteq\Keymedia\BaseTest;
 
 class APITest extends BaseTest
 {
-    protected $apiConfig;
-
-    public function setUp()
-    {
-        parent::setUp();
-        $options = array(
-            'apiKey' => 'test_api_key',
-            'apiUrl' => 'http://test.host',
-            'apiUser' => 'test_user'
-        );
-        $this->apiConfig = new Configuration($options);
-    }
-
     /**
      * @expectedException \Exception
      * @expectedExceptionMessage Configuration

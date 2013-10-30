@@ -7,14 +7,11 @@ use Keyteq\Keymedia\BaseTest;
 class RequestSignerTest extends BaseTest
 {
 
-    protected $apiUser;
-    protected $apiKey;
     protected $signer;
 
     public function setUp()
     {
         parent::setUp();
-        $this->apiKey = 'qwertyuiop[]';
         $this->signer = new RequestSigner();
     }
 
@@ -25,8 +22,8 @@ class RequestSignerTest extends BaseTest
     {
         $signer = $this->signer;
         $message = $this->getMessageForPayload($payload);
-        $expected = hash_hmac('sha1', $message, $this->apiKey);
-        $actual = $signer->getSignature($message, $this->apiKey);
+        $expected = hash_hmac('sha1', $message, $this->apiConfig->getApiKey());
+        $actual = $signer->getSignature($message, $this->apiConfig->getApiKey());
         $this->assertEquals($expected, $actual);
     }
 
