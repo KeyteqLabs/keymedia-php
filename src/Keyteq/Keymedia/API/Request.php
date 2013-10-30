@@ -49,18 +49,8 @@ class Request
     public function perform()
     {
         $headers = $this->getSignHeaders();
-        $wrapper = $this->requestWrapper;
-        $response = false;
         $options = array();
-        $method = strtolower($this->method);
-
-        switch ($this->method) {
-            case Requests::GET:
-                $response = $wrapper->$method($this->url, $headers, $options);
-                break;
-            default:
-                throw new \LogicException("HTTP method '{$this->method}' is not supported.");
-        }
+        $response = $this->getResponse($headers, $options);
 
         return $response;
     }
@@ -151,5 +141,21 @@ class Request
             list($name, $value) = explode('=', $item);
             $this->addQueryParameter($name, $value);
         }
-     }
+    }
+
+    protected function getResponse($headers, $options)
+    {
+        $response = false;
+        $method = strtolower($this->method);
+
+        switch ($this->method) {
+            case Requests::GET:
+                $response = $this->requestWrapper->$method($this->url, $headers, $options);
+                break;
+            default:
+                throw new \LogicException("HTTP method '{$this->method}' is not supported.");
+        }
+
+        return $response;
+    }
 }
