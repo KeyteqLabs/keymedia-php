@@ -52,7 +52,7 @@ class RestConnectorTest extends BaseTest
         $mock = m::mock('\Keyteq\Keymedia\Util\RequestBuilder')
             ->shouldReceive('buildRequest')
             ->once()
-            ->with($url, 'GET', $parameters)
+            ->with($url, $method, $parameters)
             ->andReturn($request)
             ->getMock();
 

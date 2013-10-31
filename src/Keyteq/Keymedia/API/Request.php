@@ -25,7 +25,6 @@ class Request
 
     public function setUrl($url)
     {
-        $this->url = $url;
         $parsed = parse_url($url);
 
         if (false === $parsed) {
@@ -34,7 +33,10 @@ class Request
 
         if (array_key_exists('query', $parsed)) {
             $this->parseQuery($parsed['query']);
+            $url = str_replace('?' . $parsed['query'], '', $url);
         }
+
+        $this->url = $url;
 
         return $this;
     }
@@ -50,14 +52,17 @@ class Request
     {
         $headers = $this->getSignHeaders();
         $options = array();
+        $this->url .= '?' . $this->getQueryParameters(true);
         $response = $this->getResponse($headers, $options);
 
         return $response;
     }
 
-    public function getQueryParameters()
+    public function getQueryParameters($stringify = false)
     {
-        return $this->queryParameters;
+        return $stringify
+            ? http_build_query($this->queryParameters)
+            : $this->queryParameters;
     }
 
     public function addQueryParameter($name, $value)

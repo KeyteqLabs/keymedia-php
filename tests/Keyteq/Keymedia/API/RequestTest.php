@@ -77,6 +77,28 @@ class RequestTest extends BaseTest
         $request->setMethod('INVALID')->perform();
     }
 
+    public function testSetUrlStripsQueryString()
+    {
+        $expected = 'http://host/path';
+        $url = $expected . '?q=search';
+        $request = new Request($this->getApiConfig(), new \Keyteq\Keymedia\Util\RequestSigner(), new \Keyteq\Keymedia\Util\RequestWrapper());
+        $request->setUrl($url);
+        $request = (array) $request;
+
+        $this->assertContains($expected, $request);
+    }
+
+    public function testSetUrlParsesQueryString()
+    {
+        $expected = array('q' => 'search');
+        $url = 'http://some.host/path?' . http_build_query($expected);
+        $request = new Request($this->getApiConfig(), new \Keyteq\Keymedia\Util\RequestSigner(), new \Keyteq\Keymedia\Util\RequestWrapper());
+        $request->setUrl($url);
+        $actual = $request->getQueryParameters();
+
+        $this->assertEquals($expected, $actual);
+    }
+
     protected function getRequestWrapperMock($method = 'get', $times = 1, $arguments = array(), $returning = null)
     {
         $mockBuilder = m::mock('\Keyteq\Keymedia\Util\RequestWrapper')
