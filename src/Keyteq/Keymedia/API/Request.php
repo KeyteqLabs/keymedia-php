@@ -67,22 +67,6 @@ class Request
         return $this;
     }
 
-    public static function buildUrl($host, $path, $queryParameters = array())
-    {
-        $url = sprintf('%s/%s', $host, $path);
-        $queryString = '';
-
-        foreach ($queryParameters as $name => $value) {
-            $queryString .= $name . '=' . $value;
-        }
-
-        if ($queryString) {
-            $url .= '?' . $queryString;
-        }
-
-        return $url;
-    }
-
     protected function getPayload()
     {
         $payload = '';

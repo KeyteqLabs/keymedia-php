@@ -122,6 +122,6 @@ class Media extends Item
 
     protected function buildUrl($path)
     {
-        return Request::buildUrl($this->getHost(), $path);
+        return sprintf("%s/%s", $this->getHost(), $path);
     }
 }
