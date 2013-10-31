@@ -34,4 +34,9 @@ class KeymediaClient
     {
         return $this->api->listMedia($album, $search);
     }
+
+    public function isConnected()
+    {
+        return $this->api->isConnected();
+    }
 }

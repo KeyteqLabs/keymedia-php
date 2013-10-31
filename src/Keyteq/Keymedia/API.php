@@ -76,4 +76,10 @@ class API
 
         return $result;
     }
+
+    public function isConnected()
+    {
+        $response = $this->connector->getCollection('media', array('q' => ''));
+        return !!json_decode($response);
+    }
 }

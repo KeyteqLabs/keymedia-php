@@ -177,6 +177,40 @@ class APITest extends BaseTest
         $this->assertSame($expected, $actual);
     }
 
+    public function testIsConnectedReturnsTrueIfValidJsonReceived()
+    {
+        $restMocks = array(
+            'getCollection' => array(
+                'args' => array('media', array('q' => '')),
+                'count' => 1,
+                'return' => '{}'
+            )
+        );
+
+        $rest = $this->getRestConnectorMock($restMocks);
+        $api = new API($this->apiConfig, $rest, new Model\Mapper\MapperFactory());
+        $result = $api->isConnected();
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsConnectedReturnsFalseIfInvalidJsonReceived()
+    {
+        $restMocks = array(
+            'getCollection' => array(
+                'args' => array('media', array('q' => '')),
+                'count' => 1,
+                'return' => 'non-json-response'
+            )
+        );
+
+        $rest = $this->getRestConnectorMock($restMocks);
+        $api = new API($this->apiConfig, $rest, new Model\Mapper\MapperFactory());
+        $result = $api->isConnected();
+
+        $this->assertFalse($result);
+    }
+
     protected function getMapperMock($type, $mode, array $input, $output)
     {
         $mapper = m::mock("\Keyteq\Keymedia\Model\Mapper\\{$type}Mapper")
