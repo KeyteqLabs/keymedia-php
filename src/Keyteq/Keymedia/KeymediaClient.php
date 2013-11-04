@@ -35,6 +35,11 @@ class KeymediaClient
         return $this->api->listMedia($album, $search);
     }
 
+    public function postMedia($file, $name, array $tags = array(), array $attributes = array())
+    {
+        return $this->api->postMedia($file, $name, $tags, $attributes);
+    }
+
     public function isConnected()
     {
         return $this->api->isConnected();

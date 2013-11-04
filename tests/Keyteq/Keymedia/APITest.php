@@ -177,6 +177,65 @@ class APITest extends BaseTest
         $this->assertSame($expected, $actual);
     }
 
+    public function testPostMedia()
+    {
+        $file = '@/some/path';
+        $name = 'media_name';
+        $tags = array('tag');
+        $attributes = array('attr1' => 'val1');
+        $args = compact('file', 'name', 'tags', 'attributes');
+
+        $response = new \stdClass();
+        $expected = new \stdClass();
+        $restMocks = array(
+            'postResource' => array(
+                'args' => array('media', $args),
+                'count' => 1,
+                'return' => $response
+            )
+        );
+
+        $rest = $this->getRestConnectorMock($restMocks);
+        $mediaMapper = $this->getMapperMock('Media', 'Item', array($response), $expected);
+        $factoryMocks = array('getMediaMapper' => $mediaMapper);
+        $mapperFactory = $this->getMapperFactoryMock($factoryMocks);
+        $api = new API($this->apiConfig, $rest, $mapperFactory);
+
+        $actual = $api->postMedia($file, $name, $tags, $attributes);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testPostMediaFiltersEmptyArguments()
+    {
+        $file = '@/some/path';
+        $name = 'media_name';
+        $tags = array();
+        $attributes = array();
+        $args = compact('file', 'name', 'tags', 'attributes');
+        $filteredArgs = compact('file', 'name');
+
+        $response = new \stdClass();
+        $expected = new \stdClass();
+        $restMocks = array(
+            'postResource' => array(
+                'args' => array('media', $filteredArgs),
+                'count' => 1,
+                'return' => $response
+            )
+        );
+
+        $rest = $this->getRestConnectorMock($restMocks);
+        $mediaMapper = $this->getMapperMock('Media', 'Item', array($response), $expected);
+        $factoryMocks = array('getMediaMapper' => $mediaMapper);
+        $mapperFactory = $this->getMapperFactoryMock($factoryMocks);
+        $api = new API($this->apiConfig, $rest, $mapperFactory);
+
+        $actual = $api->postMedia($file, $name, $tags, $attributes);
+
+        $this->assertSame($expected, $actual);
+    }
+
     public function testIsConnectedReturnsTrueIfValidJsonReceived()
     {
         $restMocks = array(

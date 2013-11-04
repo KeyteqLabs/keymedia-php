@@ -77,6 +77,16 @@ class API
         return $result;
     }
 
+    public function postMedia($file, $name, array $tags = array(), array $attributes = array())
+    {
+        $args = compact('file', 'name', 'tags', 'attributes');
+        $payload = array_filter($args);
+        $response = $this->connector->postResource('media', $payload);
+        $result = $this->mediaMapper->mapItem($response);
+
+        return $result;
+    }
+
     public function isConnected()
     {
         $response = $this->connector->getCollection('media', array('q' => ''));
