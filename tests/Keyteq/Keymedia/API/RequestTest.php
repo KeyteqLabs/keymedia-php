@@ -5,6 +5,8 @@ namespace Keyteq\Keymedia\API;
 use \Mockery as m;
 use Keyteq\Keymedia\API\Request;
 use Keyteq\Keymedia\BaseTest;
+use Keyteq\Keymedia\Util\RequestSigner;
+use Keyteq\Keymedia\Util\RequestWrapper;
 
 class RequestTest extends BaseTest
 {
@@ -65,34 +67,48 @@ class RequestTest extends BaseTest
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage HTTP method
-     */
-    public function testPerformThrowsForInvalidMethod()
-    {
-        $signer = $this->getSignerMock();
-        $wrapper = m::mock('\Keyteq\Keymedia\Util\RequestWrapper');
-        $request = new Request($this->getApiConfig(), $signer, $wrapper);
-        $request->setMethod('INVALID')->perform();
-    }
-
     public function testSetUrlStripsQueryString()
     {
         $expected = 'http://host/path';
         $url = $expected . '?q=search';
-        $request = new Request($this->getApiConfig(), new \Keyteq\Keymedia\Util\RequestSigner(), new \Keyteq\Keymedia\Util\RequestWrapper());
+        $request = new Request($this->getApiConfig(), new RequestSigner(), new RequestWrapper());
         $request->setUrl($url);
         $request = (array) $request;
 
         $this->assertContains($expected, $request);
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage HTTP method INVALID is not supported
+     */
+    public function testSetMethodThrowsOnInvalid()
+    {
+        $request = new Request($this->apiConfig, new RequestSigner(), new RequestWrapper());
+        $request->setMethod('INVALID');
+    }
+
+    public function testSetMethodAllowsGet()
+    {
+        $expected = new Request($this->apiConfig, new RequestSigner(), new RequestWrapper());
+        $actual = $expected->setMethod('GET');
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testSetMethodAllowsPost()
+    {
+        $expected = new Request($this->apiConfig, new RequestSigner(), new RequestWrapper());
+        $actual = $expected->setMethod('POST');
+
+        $this->assertSame($expected, $actual);
+    }
+
     public function testSetUrlParsesQueryString()
     {
         $expected = array('q' => 'search');
         $url = 'http://some.host/path?' . http_build_query($expected);
-        $request = new Request($this->getApiConfig(), new \Keyteq\Keymedia\Util\RequestSigner(), new \Keyteq\Keymedia\Util\RequestWrapper());
+        $request = new Request($this->getApiConfig(), new RequestSigner(), new RequestWrapper());
         $request->setUrl($url);
         $actual = $request->getQueryParameters();
 

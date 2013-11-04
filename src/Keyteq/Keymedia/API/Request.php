@@ -43,7 +43,9 @@ class Request
 
     public function setMethod($method)
     {
-        $this->method = $method;
+        if ($this->isMethodSupported($method)) {
+            $this->method = $method;
+        }
 
         return $this;
     }
@@ -132,19 +134,44 @@ class Request
         }
     }
 
-    protected function getResponse($headers, $options)
+    protected function getResponse($headers, $options, array $data = array())
     {
         $response = false;
         $method = strtolower($this->method);
 
         switch ($this->method) {
             case Requests::GET:
+            case Requests::DELETE:
                 $response = $this->requestWrapper->$method($this->url, $headers, $options);
                 break;
+            case Requests::POST:
+            case Requests::PUT:
+                $response = $this->requestWrapper->$method($url, $headers, $data, $options);
             default:
                 throw new \LogicException("HTTP method '{$this->method}' is not supported.");
         }
 
         return $response;
+    }
+
+    protected function isMethodSupported($method)
+    {
+        $supportedMethods = $this->supportedMethods();
+
+        if (!in_array($method, $supportedMethods)) {
+            throw new \LogicException("HTTP method {$method} is not supported!");
+        }
+
+        return true;
+    }
+
+    protected function supportedMethods()
+    {
+        return array(
+            Requests::GET,
+            Requests::POST,
+            Requests::PUT,
+            Requests::DELETE
+        );
     }
 }
