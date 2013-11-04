@@ -37,6 +37,7 @@ class KeymediaClient
 
     public function postMedia($file, $name, array $tags = array(), array $attributes = array())
     {
+        return new Model\Media(array()); // FIXME just a stub for early integration
         return $this->api->postMedia($file, $name, $tags, $attributes);
     }
 
