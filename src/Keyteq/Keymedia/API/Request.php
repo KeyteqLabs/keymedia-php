@@ -146,7 +146,8 @@ class Request
                 break;
             case Requests::POST:
             case Requests::PUT:
-                $response = $this->requestWrapper->$method($url, $headers, $data, $options);
+                $response = $this->requestWrapper->$method($this->url, $headers, $data, $options);
+                break;
             default:
                 throw new \LogicException("HTTP method '{$this->method}' is not supported.");
         }
