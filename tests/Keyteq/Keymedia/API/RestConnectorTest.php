@@ -36,6 +36,20 @@ class RestConnectorTest extends BaseTest
         $this->assertSame($expected, $actual);
     }
 
+    public function testPostResource()
+    {
+        $expected = new \stdClass();
+        $request = $this->getRequestMock($expected);
+        $resourceName = 'resource_name';
+        $url = static::API_URL . "/{$resourceName}.json";
+        $parameters = array();
+        $requestBuilder = $this->getRequestBuilderMock($url, 'POST', $parameters, $request);
+        $rest = new RestConnector($this->apiConfig, $requestBuilder);
+        $actual = $rest->postResource($resourceName, $parameters);
+
+        $this->assertSame($expected, $actual);
+    }
+
     protected function getRequestMock($returnValue)
     {
         $request = m::mock('\Keyteq\Keymedia\API\Request')

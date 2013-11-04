@@ -34,6 +34,15 @@ class RestConnector
         return $request->perform();
     }
 
+    public function postResource($resourceName, array $parameters)
+    {
+        $path = "{$resourceName}.json";
+        $url = $this->buildUrl($path);
+        $request = $this->requestBuilder->buildRequest($url, 'POST', $parameters);
+
+        return $request->perform();
+    }
+
     protected function buildUrl($path = '')
     {
         $rootUrl = $this->config->getApiUrl();
