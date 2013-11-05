@@ -20,7 +20,7 @@ class RequestBuilder
         $request->setMethod($method)->setUrl($url);
 
         foreach ($parameters as $name => $value) {
-            $request->addQueryParameter($name, $value);
+            $request->addParameter($name, $value);
         }
 
         return $request;

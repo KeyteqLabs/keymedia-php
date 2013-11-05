@@ -28,7 +28,7 @@ class RequestTest extends BaseTest
 
         $request = new Request($this->apiConfig, $signer, $requestWrapper);
         $request->setUrl('http://m.keymedia.dev');
-        $request->addQueryParameter($queryKey, $queryValue);
+        $request->addParameter($queryKey, $queryValue);
         $request->perform();
     }
 
@@ -50,7 +50,7 @@ class RequestTest extends BaseTest
         $requestWrapper = $this->getRequestWrapperMock('get', 1, array($url, $headers, array()));
 
         $request = new Request($this->getApiConfig(), $signer, $requestWrapper);
-        $request->setUrl($url)->addQueryParameter($queryKey, $queryValue)->perform();
+        $request->setUrl($url)->addParameter($queryKey, $queryValue)->perform();
     }
 
     public function testPerformReturnsTheResponse()
@@ -110,7 +110,7 @@ class RequestTest extends BaseTest
         $url = 'http://some.host/path?' . http_build_query($expected);
         $request = new Request($this->getApiConfig(), new RequestSigner(), new RequestWrapper());
         $request->setUrl($url);
-        $actual = $request->getQueryParameters();
+        $actual = $request->getParameters();
 
         $this->assertEquals($expected, $actual);
     }

@@ -14,7 +14,7 @@ class Request
     protected $url = '';
     protected $signer;
     protected $requestWrapper;
-    protected $queryParameters = array();
+    protected $parameters = array();
 
     public function __construct(Configuration $config, RequestSigner $signer, RequestWrapper $requestWrapper)
     {
@@ -54,22 +54,22 @@ class Request
     {
         $headers = $this->getSignHeaders();
         $options = array();
-        $this->url .= '?' . $this->getQueryParameters(true);
+        $this->url .= '?' . $this->getParameters(true);
         $response = $this->getResponse($headers, $options);
 
         return $response;
     }
 
-    public function getQueryParameters($stringify = false)
+    public function getParameters($stringify = false)
     {
         return $stringify
-            ? http_build_query($this->queryParameters)
-            : $this->queryParameters;
+            ? http_build_query($this->parameters)
+            : $this->parameters;
     }
 
-    public function addQueryParameter($name, $value)
+    public function addParameter($name, $value)
     {
-        $this->queryParameters[$name] = $value;
+        $this->parameters[$name] = $value;
 
         return $this;
     }
@@ -77,8 +77,8 @@ class Request
     protected function getPayload()
     {
         $payload = '';
-        if (!is_null($this->getQueryParameters())) {
-            $data = $this->queryParameters;
+        if (!is_null($this->getParameters())) {
+            $data = $this->parameters;
             ksort($data);
             foreach ($data as $k => $v) {
                 if (substr($v, 0, 1) !== '@') {
@@ -130,7 +130,7 @@ class Request
         $items = explode('&', $query);
         foreach ($items as $item) {
             list($name, $value) = explode('=', $item);
-            $this->addQueryParameter($name, $value);
+            $this->addParameter($name, $value);
         }
     }
 
