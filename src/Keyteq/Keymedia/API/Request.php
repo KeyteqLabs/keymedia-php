@@ -54,12 +54,13 @@ class Request
     {
         $headers = $this->getSignHeaders();
         $options = array();
+        $url = $this->url;
 
         if (Requests::GET === $this->method) {
-            $this->url .= '?' . $this->getParameters(true);
+            $url .= '?' . $this->getParameters(true);
         }
 
-        $response = $this->getResponse($headers, $options);
+        $response = $this->getResponse($url, $headers, $options);
 
         return $response;
     }
@@ -138,7 +139,7 @@ class Request
         }
     }
 
-    protected function getResponse($headers, $options, array $data = array())
+    protected function getResponse($url, $headers, $options, array $data = array())
     {
         $response = false;
         $method = strtolower($this->method);
@@ -146,11 +147,11 @@ class Request
         switch ($this->method) {
             case Requests::GET:
             case Requests::DELETE:
-                $response = $this->requestWrapper->$method($this->url, $headers, $options);
+                $response = $this->requestWrapper->$method($url, $headers, $options);
                 break;
             case Requests::POST:
             case Requests::PUT:
-                $response = $this->requestWrapper->$method($this->url, $headers, $data, $options);
+                $response = $this->requestWrapper->$method($url, $headers, $data, $options);
                 break;
             default:
                 throw new \LogicException("HTTP method '{$this->method}' is not supported.");
