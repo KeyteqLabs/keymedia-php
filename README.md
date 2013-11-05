@@ -3,6 +3,8 @@ keymedia-php
 
 KeyMedia PHP API wrapper
 
+[![Build Status](https://travis-ci.org/KeyteqLabs/keymedia-php.png?branch=master)](https://travis-ci.org/KeyteqLabs/keymedia-php)
+
 ## Basic usage example
 
 ### Initialize the client
