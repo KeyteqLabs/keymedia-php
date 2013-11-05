@@ -54,7 +54,11 @@ class Request
     {
         $headers = $this->getSignHeaders();
         $options = array();
-        $this->url .= '?' . $this->getParameters(true);
+
+        if (Requests::GET === $this->method) {
+            $this->url .= '?' . $this->getParameters(true);
+        }
+
         $response = $this->getResponse($headers, $options);
 
         return $response;
