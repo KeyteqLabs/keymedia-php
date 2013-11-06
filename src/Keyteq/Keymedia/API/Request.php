@@ -60,7 +60,7 @@ class Request
             $url .= '?' . $this->getParameters(true);
         }
 
-        $response = $this->getResponse($url, $headers, $options);
+        $response = $this->getResponse($url, $headers, $options, $this->getParameters());
 
         return $response;
     }
