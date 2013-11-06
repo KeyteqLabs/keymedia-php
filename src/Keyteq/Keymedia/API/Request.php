@@ -68,7 +68,7 @@ class Request
     public function getParameters($stringify = false)
     {
         return $stringify
-            ? http_build_query($this->parameters)
+            ? $this->smartBuildQuery($this->parameters)
             : $this->parameters;
     }
 
@@ -152,6 +152,7 @@ class Request
                 break;
             case Requests::POST:
             case Requests::PUT:
+                $data = $this->smartBuildQuery($data);
                 $response = $this->requestWrapper->$method($url, $headers, $data, $options);
                 break;
             default:
@@ -180,5 +181,13 @@ class Request
             Requests::PUT,
             Requests::DELETE
         );
+    }
+
+    protected function smartBuildQuery(array $parameters)
+    {
+        $query = http_build_query($parameters);
+        $ret = str_replace('=%40', '=@', $query);
+
+        return $ret;
     }
 }

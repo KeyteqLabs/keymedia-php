@@ -179,38 +179,19 @@ class APITest extends FilesystemTest
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage could not be read
-     */
-    public function testPostMediaThrowsWhenFileUnreadable()
-    {
-        $file = '/nonexistent';
-        $name = 'media_name';
-        $rest = new RestConnector($this->apiConfig, new RequestBuilder($this->apiConfig));
-        $mapperFactory = new MapperFactory();
-        $api = new API($this->apiConfig, $rest, $mapperFactory);
-
-        $api->postMedia($file, $name);
-    }
-
     public function testPostMedia()
     {
-        $filename = 'filename';
-        $content = 'content';
-        $file = $this->addFile($filename, $content);
+        $file = '@filename';
         $name = 'media_name';
         $tags = array('tag');
         $attributes = array('attr1' => 'val1');
         $args = compact('file', 'name', 'tags', 'attributes');
-        $argsAfterFileRead = $args;
-        $argsAfterFileRead['file'] = $content;
 
         $response = new \stdClass();
         $expected = new \stdClass();
         $restMocks = array(
             'postResource' => array(
-                'args' => array('media', $argsAfterFileRead),
+                'args' => array('media', $args),
                 'count' => 1,
                 'return' => $response
             )
@@ -229,21 +210,17 @@ class APITest extends FilesystemTest
 
     public function testPostMediaFiltersEmptyArguments()
     {
-        $filename = 'filename';
-        $fileContent = 'content';
+        $file = '@filename';
         $name = 'media_name';
-        $file = $this->addFile($filename, $fileContent);
         $tags = array();
         $attributes = array();
         $filteredArgs = compact('file', 'name');
-        $argsAfterFileRead = $filteredArgs;
-        $argsAfterFileRead['file'] = $fileContent;
 
         $response = new \stdClass();
         $expected = new \stdClass();
         $restMocks = array(
             'postResource' => array(
-                'args' => array('media', $argsAfterFileRead),
+                'args' => array('media', $filteredArgs),
                 'count' => 1,
                 'return' => $response
             )

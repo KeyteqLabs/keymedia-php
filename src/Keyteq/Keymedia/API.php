@@ -77,13 +77,8 @@ class API
         return $result;
     }
 
-    public function postMedia($filename, $name, array $tags = array(), array $attributes = array())
+    public function postMedia($file, $name, array $tags = array(), array $attributes = array())
     {
-        if (!is_readable($filename)) {
-            throw new \InvalidArgumentException("File {$filename} could not be read!");
-        }
-
-        $file = file_get_contents($filename);
         $args = compact('file', 'name', 'tags', 'attributes');
         $payload = array_filter($args);
         $response = $this->connector->postResource('media', $payload);
