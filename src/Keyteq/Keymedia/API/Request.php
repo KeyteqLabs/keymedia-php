@@ -84,6 +84,7 @@ class Request
         $payload = '';
         if (!is_null($this->getParameters())) {
             $data = $this->parameters;
+            unset($data['file']);
             ksort($data);
             foreach ($data as $k => $v) {
                 if (substr($v, 0, 1) !== '@') {

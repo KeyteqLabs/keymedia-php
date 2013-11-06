@@ -67,6 +67,18 @@ class RequestTest extends BaseTest
         $this->assertSame($expected, $actual);
     }
 
+    public function testPerformSkipsFileParameterWhenSigning()
+    {
+        $key = 'file';
+        $value = 'file_content';
+        $payload = '';
+        $signer = $this->getSignerMock($payload);
+        $wrapper = $this->getRequestWrapperMock();
+        $request = new Request($this->getApiConfig(), $signer, $wrapper);
+
+        $request->setUrl('http://test_host')->addParameter($key, $value)->perform();
+    }
+
     public function testSetUrlStripsQueryString()
     {
         $expected = 'http://host/path';
