@@ -196,17 +196,21 @@ class APITest extends FilesystemTest
 
     public function testPostMedia()
     {
-        $file = '@/some/path';
+        $filename = 'filename';
+        $content = 'content';
+        $file = $this->addFile($filename, $content);
         $name = 'media_name';
         $tags = array('tag');
         $attributes = array('attr1' => 'val1');
         $args = compact('file', 'name', 'tags', 'attributes');
+        $argsAfterFileRead = $args;
+        $argsAfterFileRead['file'] = $content;
 
         $response = new \stdClass();
         $expected = new \stdClass();
         $restMocks = array(
             'postResource' => array(
-                'args' => array('media', $args),
+                'args' => array('media', $argsAfterFileRead),
                 'count' => 1,
                 'return' => $response
             )
@@ -226,21 +230,20 @@ class APITest extends FilesystemTest
     public function testPostMediaFiltersEmptyArguments()
     {
         $filename = 'filename';
-        $file = vfsStream::url($filename);
+        $fileContent = 'content';
         $name = 'media_name';
-        $vfsFile = vfsStream::newFile($filename, 0644)
-            ->withContent('content')
-            ->at($this->fsRoot);
-        $this->assertTrue($this->fsRoot->hasChild($vfsFile->path()));
+        $file = $this->addFile($filename, $fileContent);
         $tags = array();
         $attributes = array();
         $filteredArgs = compact('file', 'name');
+        $argsAfterFileRead = $filteredArgs;
+        $argsAfterFileRead['file'] = $fileContent;
 
         $response = new \stdClass();
         $expected = new \stdClass();
         $restMocks = array(
             'postResource' => array(
-                'args' => array('media', $filteredArgs),
+                'args' => array('media', $argsAfterFileRead),
                 'count' => 1,
                 'return' => $response
             )
@@ -250,11 +253,9 @@ class APITest extends FilesystemTest
         $mediaMapper = $this->getMapperMock('Media', 'Item', array($response), $expected);
         $factoryMocks = array('getMediaMapper' => $mediaMapper);
         $mapperFactory = $this->getMapperFactoryMock($factoryMocks);
+
         $api = new API($this->apiConfig, $rest, $mapperFactory);
-
-        $actual = $api->postMedia($file, $name, $tags, $attributes);
-
-        $this->assertSame($expected, $actual);
+        $api->postMedia($file, $name, $tags, $attributes);
     }
 
     public function testIsConnectedReturnsTrueIfValidJsonReceived()
