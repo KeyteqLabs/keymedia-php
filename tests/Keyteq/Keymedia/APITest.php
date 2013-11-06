@@ -2,11 +2,13 @@
 
 namespace Keyteq\Keymedia;
 
-use Keyteq\Keymedia\API\Configuration;
 use \Mockery as m;
-use Keyteq\Keymedia\BaseTest;
+use Keyteq\Keymedia\Util\RequestBuilder;
+use Keyteq\Keymedia\Model\Mapper\MapperFactory;
+use Keyteq\Keymedia\API\RestConnector;
+use org\bovigo\vfs\vfsStream;
 
-class APITest extends BaseTest
+class APITest extends FilesystemTest
 {
     /**
      * @expectedException \Exception
@@ -177,6 +179,21 @@ class APITest extends BaseTest
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage could not be read
+     */
+    public function testPostMediaThrowsWhenFileUnreadable()
+    {
+        $file = '/nonexistent';
+        $name = 'media_name';
+        $rest = new RestConnector($this->apiConfig, new RequestBuilder($this->apiConfig));
+        $mapperFactory = new MapperFactory();
+        $api = new API($this->apiConfig, $rest, $mapperFactory);
+
+        $api->postMedia($file, $name);
+    }
+
     public function testPostMedia()
     {
         $file = '@/some/path';
@@ -208,11 +225,15 @@ class APITest extends BaseTest
 
     public function testPostMediaFiltersEmptyArguments()
     {
-        $file = '@/some/path';
+        $filename = 'filename';
+        $file = vfsStream::url($filename);
         $name = 'media_name';
+        $vfsFile = vfsStream::newFile($filename, 0644)
+            ->withContent('content')
+            ->at($this->fsRoot);
+        $this->assertTrue($this->fsRoot->hasChild($vfsFile->path()));
         $tags = array();
         $attributes = array();
-        $args = compact('file', 'name', 'tags', 'attributes');
         $filteredArgs = compact('file', 'name');
 
         $response = new \stdClass();
