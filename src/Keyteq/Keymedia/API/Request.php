@@ -85,7 +85,6 @@ class Request
         if (!is_null($this->getParameters())) {
             $data = $this->parameters;
             unset($data['file']);
-            unset($data['name']);
             ksort($data);
             foreach ($data as $k => $v) {
                 if (substr($v, 0, 1) !== '@') {
@@ -155,7 +154,6 @@ class Request
             case Requests::PUT:
                 $data = $this->smartBuildQuery($data);
                 $response = $this->requestWrapper->$method($url, $headers, $data, $options);
-                var_dump($response); die;
                 break;
             default:
                 throw new \LogicException("HTTP method '{$this->method}' is not supported.");
