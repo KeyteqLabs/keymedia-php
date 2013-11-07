@@ -17,7 +17,6 @@ class RequestWrapper
     public function post($url, $headers = array(), $data = array(), $options = array())
     {
         $request = \Requests::post($url, $headers, $data, $options);
-
         return $this->getResponse($request);
     }
 

@@ -85,6 +85,7 @@ class Request
         if (!is_null($this->getParameters())) {
             $data = $this->parameters;
             unset($data['file']);
+            unset($data['name']);
             ksort($data);
             foreach ($data as $k => $v) {
                 if (substr($v, 0, 1) !== '@') {
@@ -154,11 +155,11 @@ class Request
             case Requests::PUT:
                 $data = $this->smartBuildQuery($data);
                 $response = $this->requestWrapper->$method($url, $headers, $data, $options);
+                var_dump($response); die;
                 break;
             default:
                 throw new \LogicException("HTTP method '{$this->method}' is not supported.");
         }
-
         return $response;
     }
 
@@ -185,9 +186,14 @@ class Request
 
     protected function smartBuildQuery(array $parameters)
     {
+        $append = '';
+        if(isset($parameters['file'])) {
+            $file = $parameters['file'];
+            unset($parameters['file']);
+            $append = '&file='.$file; //FIXME: fugly
+        }
         $query = http_build_query($parameters);
-        $ret = str_replace('=%40', '=@', $query);
-
-        return $ret;
+        $query .= $append;
+        return $query;
     }
 }
