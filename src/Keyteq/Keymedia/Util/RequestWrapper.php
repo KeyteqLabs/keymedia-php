@@ -7,35 +7,36 @@ namespace Keyteq\Keymedia\Util;
  */
 class RequestWrapper
 {
-    public function get($url, $headers = array(), $options = array())
+    public function get($url, $headers = array())
     {
-        $request = \Requests::get($url, $headers, $options);
+        $request = \Unirest::get($url, $headers);
 
         return $this->getResponse($request);
     }
 
-    public function post($url, $headers = array(), $data = array(), $options = array())
+    public function post($url, $headers = array(), $data = array())
     {
-        $request = \Requests::post($url, $headers, $data, $options);
-        return $this->getResponse($request);
-    }
-
-    public function put($url, $headers = array(), $data = array(), $options = array())
-    {
-        $request = \Requests::put($url, $headers, $data, $options);
+        $request = \Unirest::post($url, $headers, $data);
 
         return $this->getResponse($request);
     }
 
-    public function delete($url, $headers = array(), $options = array())
+    public function put($url, $headers = array(), $data = array())
     {
-        $request = \Requests::delete($url, $headers, $options);
+        $request = \Unirest::put($url, $headers, $data);
+
+        return $this->getResponse($request);
+    }
+
+    public function delete($url, $headers = array())
+    {
+        $request = \Unirest::delete($url, $headers);
 
         return $this->getResponse($request);
     }
 
     protected function getResponse($request)
     {
-        return $request->body;
+        return $request->raw_body;
     }
 }

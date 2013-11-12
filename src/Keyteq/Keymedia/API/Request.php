@@ -5,12 +5,11 @@ namespace Keyteq\Keymedia\API;
 use Keyteq\Keymedia\Util\RequestWrapper;
 use Keyteq\Keymedia\Util\RequestSigner;
 use Keyteq\Keymedia\API\Configuration;
-use \Requests;
 
 class Request
 {
     protected $config;
-    protected $method = Requests::GET;
+    protected $method = 'GET';
     protected $url = '';
     protected $signer;
     protected $requestWrapper;
@@ -56,7 +55,7 @@ class Request
         $options = array();
         $url = $this->url;
 
-        if (Requests::GET === $this->method) {
+        if ('GET' === $this->method) {
             $url .= '?' . $this->getParameters(true);
         }
 
@@ -146,13 +145,12 @@ class Request
         $method = strtolower($this->method);
 
         switch ($this->method) {
-            case Requests::GET:
-            case Requests::DELETE:
+            case 'GET':
+            case 'DELETE':
                 $response = $this->requestWrapper->$method($url, $headers, $options);
                 break;
-            case Requests::POST:
-            case Requests::PUT:
-                $data = $this->smartBuildQuery($data);
+            case 'POST':
+            case 'PUT':
                 $response = $this->requestWrapper->$method($url, $headers, $data, $options);
                 break;
             default:
@@ -175,10 +173,10 @@ class Request
     protected function supportedMethods()
     {
         return array(
-            Requests::GET,
-            Requests::POST,
-            Requests::PUT,
-            Requests::DELETE
+            'GET',
+            'POST',
+            'PUT',
+            'DELETE'
         );
     }
 
