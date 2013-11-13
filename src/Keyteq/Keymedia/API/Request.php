@@ -67,7 +67,7 @@ class Request
     public function getParameters($stringify = false)
     {
         return $stringify
-            ? $this->smartBuildQuery($this->parameters)
+            ? http_build_query($this->parameters)
             : $this->parameters;
     }
 
@@ -178,18 +178,5 @@ class Request
             'PUT',
             'DELETE'
         );
-    }
-
-    protected function smartBuildQuery(array $parameters)
-    {
-        $append = '';
-        if(isset($parameters['file'])) {
-            $file = $parameters['file'];
-            unset($parameters['file']);
-            $append = '&file='.$file; //FIXME: fugly
-        }
-        $query = http_build_query($parameters);
-        $query .= $append;
-        return $query;
     }
 }
