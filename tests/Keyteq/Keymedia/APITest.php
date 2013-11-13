@@ -3,12 +3,8 @@
 namespace Keyteq\Keymedia;
 
 use \Mockery as m;
-use Keyteq\Keymedia\Util\RequestBuilder;
-use Keyteq\Keymedia\Model\Mapper\MapperFactory;
-use Keyteq\Keymedia\API\RestConnector;
-use org\bovigo\vfs\vfsStream;
 
-class APITest extends FilesystemTest
+class APITest extends BaseTest
 {
     /**
      * @expectedException \Exception
