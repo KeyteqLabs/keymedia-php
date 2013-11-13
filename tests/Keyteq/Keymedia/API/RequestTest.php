@@ -70,6 +70,28 @@ class RequestTest extends BaseTest
         $request->setUrl($url)->addParameter($queryKey, $queryValue)->perform();
     }
 
+    public function testPerformSendsPostFields()
+    {
+        $queryKey = 'name';
+        $queryValue = 'value';
+        $params = array($queryKey => $queryValue);
+        $path = 'test_path';
+        $url = "{$this->apiConfig->getApiUrl()}/{$path}";
+        $payload = $queryKey . $queryValue;
+        $signature = 'test_signature';
+        $signer = $this->getSignerMock($payload, $signature);
+
+        $headers = array(
+            'X-Keymedia-Username' => $this->apiConfig->getApiUser(),
+            'X-Keymedia-Signature' => $signature
+        );
+
+        $requestWrapper = $this->getRequestWrapperMock('post', 1, array($url, $headers, $params, array()));
+
+        $request = new Request($this->getApiConfig(), $signer, $requestWrapper);
+        $request->setMethod('POST')->setUrl($url)->addParameter($queryKey, $queryValue)->perform();
+    }
+
     public function testPerformReturnsTheResponse()
     {
         $apiConfig = $this->getApiConfig();
