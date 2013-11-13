@@ -122,11 +122,6 @@ class Request
         return $this->config->getApiKey();
     }
 
-    protected function getApiHost()
-    {
-        return $this->config->getApiHost();
-    }
-
     protected function getApiUser()
     {
         return $this->config->getApiUser();

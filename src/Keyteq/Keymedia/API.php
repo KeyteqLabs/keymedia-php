@@ -23,11 +23,6 @@ class API
         $this->albumMapper = $mapperFactory->getAlbumMapper();
     }
 
-    public function getApiConfig()
-    {
-        return $this->apiConfig;
-    }
-
     public function listMedia($album = false, $search = false)
     {
         $parameters = array();
