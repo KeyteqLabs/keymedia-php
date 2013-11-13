@@ -11,7 +11,7 @@ use Keyteq\Keymedia\Util\RequestWrapper;
 class RequestTest extends BaseTest
 {
 
-    public function testPerformSignsRequests()
+    public function testPerformSignsRequestsByDefault()
     {
         $queryKey = 'key';
         $queryValue = 'value';
@@ -30,6 +30,23 @@ class RequestTest extends BaseTest
         $request->setUrl('http://m.keymedia.dev');
         $request->addParameter($queryKey, $queryValue);
         $request->perform();
+    }
+
+    public function testPerformSkipsSigningWhenInstructed()
+    {
+        $signer = m::mock('\Keyteq\Keymedia\Util\RequestSigner')
+            ->shouldReceive('getSignature')
+            ->never()
+            ->getMock();
+
+        $requestWrapper = m::mock('\Keyteq\Keymedia\Util\RequestWrapper')
+            ->shouldReceive('get')
+            ->once()
+            ->withAnyArgs()
+            ->getMock();
+
+        $request = new Request($this->apiConfig, $signer, $requestWrapper, true);
+        $request->setUrl('http://some.url')->perform();
     }
 
     public function testPerformSendsRequests()

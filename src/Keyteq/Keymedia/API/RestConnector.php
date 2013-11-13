@@ -20,7 +20,7 @@ class RestConnector
     {
         $path = "{$resourceName}/{$resourceId}.json";
         $url = $this->buildUrl($path, $parameters);
-        $request = $this->requestBuilder->buildRequest($url, 'GET', $parameters);
+        $request = $this->requestBuilder->buildRequest($url, 'GET', $parameters, $this->skipRequestSigning());
 
         return $request->perform();
     }
@@ -29,7 +29,7 @@ class RestConnector
     {
         $path = "{$resourceName}.json";
         $url = $this->buildUrl($path);
-        $request = $this->requestBuilder->buildRequest($url, 'GET', $parameters);
+        $request = $this->requestBuilder->buildRequest($url, 'GET', $parameters, $this->skipRequestSigning());
 
         return $request->perform();
     }
@@ -38,7 +38,7 @@ class RestConnector
     {
         $path = "{$resourceName}.json";
         $url = $this->buildUrl($path);
-        $request = $this->requestBuilder->buildRequest($url, 'POST', $parameters);
+        $request = $this->requestBuilder->buildRequest($url, 'POST', $parameters, $this->skipRequestSigning());
 
         return $request->perform();
     }
@@ -49,5 +49,10 @@ class RestConnector
         $url = "{$rootUrl}/{$path}";
 
         return $url;
+    }
+
+    protected function skipRequestSigning()
+    {
+        return !$this->config->getApiKey();
     }
 }

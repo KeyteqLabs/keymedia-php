@@ -265,6 +265,78 @@ class APITest extends BaseTest
         $this->assertFalse($result);
     }
 
+    public function testGetTokenWithValidPasswordReturnsToken()
+    {
+        $username = $this->apiConfig->getApiUser();
+        $password = 'password';
+        $expected = $this->getApiConfig()->getApiKey();
+        $return = array('ok' => true, 'token' => $expected);
+        $args = compact('username', 'password');
+        $restMocks = array(
+            'postResource' => array(
+                'args' => array('token', $args),
+                'count' => 1,
+                'return' => json_encode($return)
+            )
+        );
+        $rest = $this->getRestConnectorMock($restMocks);
+
+        $api = new API($this->apiConfig, $rest, new Model\Mapper\MapperFactory());
+        $actual = $api->getToken($password);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testGetTokenWithValidPasswordUpdatesConfig()
+    {
+        $username = $this->apiConfig->getApiUser();
+        $password = 'password';
+        $expected = 'api_key';
+        $return = array('ok' => true, 'token' => $expected);
+        $config = m::mock($this->apiConfig)
+            ->shouldDeferMissing()
+            ->shouldReceive('setApiKey')
+            ->once()
+            ->with($expected)
+            ->getMock();
+
+        $args = compact('username', 'password');
+        $restMocks = array(
+            'postResource' => array(
+                'args' => array('token', $args),
+                'count' => 1,
+                'return' => json_encode($return)
+            )
+        );
+        $rest = $this->getRestConnectorMock($restMocks);
+
+        $api = new API($config, $rest, new Model\Mapper\MapperFactory());
+        $api->getToken($password);
+    }
+
+    public function testGetTokenWithInvalidPasswordReturnsFalse()
+    {
+        $username = $this->apiConfig->getApiUser();
+        $password = 'invalid_password';
+        $apiKey = $this->getApiConfig()->getApiKey();
+        $return = array('ok' => false);
+        $args = compact('username', 'password');
+
+        $restMocks = array(
+            'postResource' => array(
+                'args' => array('token', $args),
+                'count' => 1,
+                'return' => json_encode($return)
+            )
+        );
+
+        $rest = $this->getRestConnectorMock($restMocks);
+        $api = new API($this->apiConfig, $rest, new Model\Mapper\MapperFactory());
+        $result = $api->getToken($password);
+
+        $this->assertFalse($result);
+    }
+
     protected function getMapperMock($type, $mode, array $input, $output)
     {
         $mapper = m::mock("\Keyteq\Keymedia\Model\Mapper\\{$type}Mapper")

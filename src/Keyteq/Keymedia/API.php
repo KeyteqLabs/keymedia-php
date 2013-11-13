@@ -92,4 +92,21 @@ class API
         $response = $this->connector->getCollection('media', array('q' => ''));
         return !!json_decode($response);
     }
+
+    public function getToken($password)
+    {
+        $username = $this->apiConfig->getApiUser();
+        $parameters = compact('username', 'password');
+        $response = $this->connector->postResource('token', $parameters);
+        $parsedResponse = json_decode($response, true);
+
+        if ($parsedResponse['ok']) {
+            $token = $parsedResponse['token'];
+            $this->apiConfig->setApiKey($token);
+
+            return $token;
+        } else {
+            return false;
+        }
+    }
 }

@@ -14,9 +14,9 @@ class RequestBuilder
         $this->config = $config;
     }
 
-    public function buildRequest($url, $method = 'GET', array $parameters = array())
+    public function buildRequest($url, $method = 'GET', array $parameters = array(), $skipSignature = false)
     {
-        $request = new Request($this->config, new RequestSigner(), new RequestWrapper());
+        $request = new Request($this->config, new RequestSigner(), new RequestWrapper(), $skipSignature);
         $request->setMethod($method)->setUrl($url);
 
         foreach ($parameters as $name => $value) {

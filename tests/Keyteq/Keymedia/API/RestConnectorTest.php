@@ -15,7 +15,7 @@ class RestConnectorTest extends BaseTest
         $resourceName = 'resource_name';
         $resourceId = 'resource_id';
         $url = static::API_URL . "/{$resourceName}/{$resourceId}.json";
-        $requestBuilder = $this->getRequestBuilderMock($url, 'GET', array(), $request);
+        $requestBuilder = $this->getRequestBuilderMock($url, 'GET', array(), false, $request);
         $rest = new RestConnector($this->apiConfig, $requestBuilder);
         $actual = $rest->getResource($resourceName, $resourceId);
 
@@ -29,7 +29,7 @@ class RestConnectorTest extends BaseTest
         $resourceName = 'collection_name';
         $url = static::API_URL . "/{$resourceName}.json";
         $parameters = array('k1' => 'v1', 'k2' => 'v2');
-        $requestBuilder = $this->getRequestBuilderMock($url, 'GET', $parameters, $request);
+        $requestBuilder = $this->getRequestBuilderMock($url, 'GET', $parameters, false, $request);
         $rest = new RestConnector($this->apiConfig, $requestBuilder);
         $actual = $rest->getCollection($resourceName, $parameters);
 
@@ -43,7 +43,7 @@ class RestConnectorTest extends BaseTest
         $resourceName = 'resource_name';
         $url = static::API_URL . "/{$resourceName}.json";
         $parameters = array();
-        $requestBuilder = $this->getRequestBuilderMock($url, 'POST', $parameters, $request);
+        $requestBuilder = $this->getRequestBuilderMock($url, 'POST', $parameters, false, $request);
         $rest = new RestConnector($this->apiConfig, $requestBuilder);
         $actual = $rest->postResource($resourceName, $parameters);
 
@@ -61,12 +61,12 @@ class RestConnectorTest extends BaseTest
         return $request;
     }
 
-    protected function getRequestBuilderMock($url, $method, array $parameters, $request)
+    protected function getRequestBuilderMock($url, $method, array $parameters, $skipSigning, $request)
     {
         $mock = m::mock('\Keyteq\Keymedia\Util\RequestBuilder')
             ->shouldReceive('buildRequest')
             ->once()
-            ->with($url, $method, $parameters)
+            ->with($url, $method, $parameters, $skipSigning)
             ->andReturn($request)
             ->getMock();
 

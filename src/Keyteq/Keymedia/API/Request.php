@@ -14,12 +14,14 @@ class Request
     protected $signer;
     protected $requestWrapper;
     protected $parameters = array();
+    protected $skipSignature;
 
-    public function __construct(Configuration $config, RequestSigner $signer, RequestWrapper $requestWrapper)
+    public function __construct(Configuration $config, RequestSigner $signer, RequestWrapper $requestWrapper, $skipSignature = false)
     {
         $this->config = $config;
         $this->signer = $signer;
         $this->requestWrapper = $requestWrapper;
+        $this->skipSignature = $skipSignature;
     }
 
     public function setUrl($url)
@@ -51,7 +53,7 @@ class Request
 
     public function perform()
     {
-        $headers = $this->getSignHeaders();
+        $headers = $this->skipSignature ? array() : $this->getSignHeaders();
         $options = array();
         $url = $this->url;
 

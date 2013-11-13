@@ -10,7 +10,7 @@ class KeymediaClient
 {
     protected $api;
 
-    public function __construct($apiUser, $apiKey, $apiUrl)
+    public function __construct($apiUser, $apiUrl, $apiKey = null)
     {
         $options = compact('apiUser', 'apiKey', 'apiUrl');
         $config = new Configuration($options);
@@ -43,5 +43,10 @@ class KeymediaClient
     public function isConnected()
     {
         return $this->api->isConnected();
+    }
+
+    public function getToken($password)
+    {
+        return $this->api->getToken($password);
     }
 }

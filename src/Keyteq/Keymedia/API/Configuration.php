@@ -45,6 +45,11 @@ class Configuration
         return $this->apiKey;
     }
 
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
+    }
+
     protected function parseBaseUrl($url)
     {
         $parsedUrl = parse_url($url);
