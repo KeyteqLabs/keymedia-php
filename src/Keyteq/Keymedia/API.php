@@ -92,7 +92,7 @@ class API
     {
         $username = $this->apiConfig->getApiUser();
         $parameters = compact('username', 'password');
-        $response = $this->connector->postResource('token', $parameters);
+        $response = $this->connector->postResource('users/token', $parameters);
         $parsedResponse = json_decode($response, true);
 
         if ($parsedResponse['ok']) {

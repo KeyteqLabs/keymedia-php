@@ -274,7 +274,7 @@ class APITest extends BaseTest
         $args = compact('username', 'password');
         $restMocks = array(
             'postResource' => array(
-                'args' => array('token', $args),
+                'args' => array('users/token', $args),
                 'count' => 1,
                 'return' => json_encode($return)
             )
@@ -303,7 +303,7 @@ class APITest extends BaseTest
         $args = compact('username', 'password');
         $restMocks = array(
             'postResource' => array(
-                'args' => array('token', $args),
+                'args' => array('users/token', $args),
                 'count' => 1,
                 'return' => json_encode($return)
             )
@@ -324,7 +324,7 @@ class APITest extends BaseTest
 
         $restMocks = array(
             'postResource' => array(
-                'args' => array('token', $args),
+                'args' => array('users/token', $args),
                 'count' => 1,
                 'return' => json_encode($return)
             )
