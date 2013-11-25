@@ -9,7 +9,12 @@ KeyMedia PHP API wrapper
 
 ### Initialize the client
 ```php
-$client = new KeymediaClient('username', 'apiKey', 'keymediaHost');
+$client = new KeymediaClient('username', 'keymediaURL', 'apiKey');
+```
+### In case you don't have the API key yet
+```php
+$client = new KeymediaClient('username', 'keymediaURL');
+$client->getToken('password');
 ```
 ### List albums
 ```php
