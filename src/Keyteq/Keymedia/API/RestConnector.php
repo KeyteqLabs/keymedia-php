@@ -19,8 +19,7 @@ class RestConnector
     public function getResource($resourceName, $resourceId, array $parameters = array())
     {
         $path = "{$resourceName}/{$resourceId}.json";
-        $url = $this->buildUrl($path, $parameters);
-        $request = $this->requestBuilder->buildRequest($url, 'GET', $parameters, $this->skipRequestSigning());
+        $request = $this->buildRequest($path, 'GET', $parameters);
 
         return $request->perform();
     }
@@ -28,8 +27,7 @@ class RestConnector
     public function getCollection($resourceName, array $parameters = array())
     {
         $path = "{$resourceName}.json";
-        $url = $this->buildUrl($path);
-        $request = $this->requestBuilder->buildRequest($url, 'GET', $parameters, $this->skipRequestSigning());
+        $request = $this->buildRequest($path, 'GET', $parameters);
 
         return $request->perform();
     }
@@ -37,10 +35,15 @@ class RestConnector
     public function postResource($resourceName, array $parameters)
     {
         $path = "{$resourceName}.json";
-        $url = $this->buildUrl($path);
-        $request = $this->requestBuilder->buildRequest($url, 'POST', $parameters, $this->skipRequestSigning());
+        $request = $this->buildRequest($path, 'POST', $parameters);
 
         return $request->perform();
+    }
+
+    protected function buildRequest($path, $method, $parameters)
+    {
+        $url = $this->buildUrl($path);
+        return $this->requestBuilder->buildRequest($url, $method, $parameters, $this->skipRequestSigning());
     }
 
     protected function buildUrl($path = '')
