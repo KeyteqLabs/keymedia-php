@@ -37,7 +37,8 @@ class KeymediaClient
 
     public function postMedia($file, $name, array $tags = array(), array $attributes = array())
     {
-        return $this->api->postMedia('@'.$file, $name, $tags, $attributes);
+        $file = class_exists('CURLFile') ? new \CURLFile($file) : '@' . $file;
+        return $this->api->postMedia($file, $name, $tags, $attributes);
     }
 
     public function isConnected()
