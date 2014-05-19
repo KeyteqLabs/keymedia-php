@@ -1,11 +1,15 @@
 {
-    "name": "keyteqlabs/keymedia-php",
+    "name": "keyteqlabs/keymedia",
     "description": "Keymedia API wrapper in PHP",
     "license": "MIT",
     "authors": [
         {
             "name": "Jakub Zienkiewicz",
             "email": "jakub.zienkiewicz@espeo.pl"
+        },
+        {
+            "name": "Raymond Julin",
+            "email": "raymond.julin@gmail.com"
         }
     ],
     "minimum-stability": "stable",
