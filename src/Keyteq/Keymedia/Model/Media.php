@@ -26,9 +26,10 @@ class Media extends Item
         return $this->file['type'];
     }
 
-    public function isImage()
+    public function isImage(array $types = array())
     {
-        return ('image' === $this->getGeneralType());
+        list($general,$type) = explode('/', $this->getType());
+        return $general === 'image' && (!$types || in_array($type, $types));
     }
 
     public function getUrl()
@@ -41,24 +42,18 @@ class Media extends Item
         return "{$protocol}://{$this->host}";
     }
 
-    protected function getGeneralType()
-    {
-        list($type,) = explode('/', $this->getType());
-        return $type;
-    }
-
     public function getThumbnailUrl($width = null, $height = null)
     {
-        if ($this->isImage()) {
+        if ($this->isImage(array('png', 'jpg', 'jpeg', 'gif'))) {
             if (!(is_int($width) && is_int($height))) {
                 throw new \InvalidArgumentException('Image thumbnails require dimensions!');
             }
-
             return $this->getImageThumbnailUrl($width, $height);
-
-        } else {
-            return $this->getTypeThumbnailUrl();
         }
+        elseif ($this->isImage(array('svg+xml'))) {
+            return $this->file['url'];
+        }
+        return $this->getTypeThumbnailUrl();
     }
 
     protected function getTypeThumbnailUrl()
@@ -72,14 +67,23 @@ class Media extends Item
 
     protected function getImageThumbnailUrl($width, $height)
     {
-        return $this->buildUrl("{$width}x{$height}/{$this->_id}.png");
+        $ending = $this->getExtension();
+        return $this->buildUrl("{$width}x{$height}/{$this->_id}.{$ending}");
     }
 
     protected function getExtension()
     {
-        $extension = $this->file['ending'];
-
-        return pathinfo($extension, PATHINFO_EXTENSION);
+        if ($this->file && isset($this->file['ending'])) {
+            $ending = $this->file['ending'];
+        }
+        else if ($this->file && isset($this->file['type'])) {
+            list($void,$ending) = explode('/', $this->file['type']);
+            $ending = '.' . $ending;
+        }
+        else {
+            throw new \Exception('Cant get file ending');
+        }
+        return pathinfo($ending, PATHINFO_EXTENSION);
     }
 
     protected function mapExtensionToType($extension)

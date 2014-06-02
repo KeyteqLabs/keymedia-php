@@ -37,18 +37,30 @@ class MediaTest extends BaseTest
 
     public function testGetImageThumbnailUrl()
     {
-        $type = 'image/png';
-        $id = 'media_id';
         $width = $height = 100;
         $host = 'keymedia.dev';
 
-        $data = array('_id' => $id, 'host' => $host, 'file' => array('type' => $type));
-        $media = new Media($data);
+        $fixtures = array(
+            array('_id' => 'png', 'host' => $host,
+                'file' => array('type' => 'image/png'),
+                'expected' => "http://{$host}/100x100/png.png"
+            ),
+            array('_id' => 'jpg', 'host' => $host,
+                'file' => array('type' => 'image/jpeg'),
+                'expected' => "http://{$host}/100x100/jpg.jpeg"
+            ),
+            array('_id' => 'svg', 'host' => $host,
+                'file' => array('type' => 'image/svg+xml', 'url' => 'relayed-url'),
+                'expected' => "relayed-url"
+            ),
+        );
 
-        $expected = "http://{$host}/{$width}x{$height}/{$id}.png";
-        $actual = $media->getThumbnailUrl($width, $height);
-
-        $this->assertEquals($expected, $actual);
+        foreach ($fixtures as $fixture) {
+            $expected = $fixture['expected'];
+            unset($fixture['expected']);
+            $media = new Media($fixture);
+            $this->assertEquals($expected, $media->getThumbnailUrl($width, $height));
+        }
     }
 
     /**
