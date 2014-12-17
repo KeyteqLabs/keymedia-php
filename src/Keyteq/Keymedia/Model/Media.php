@@ -10,6 +10,7 @@ class Media extends Item
     protected $file;
     protected $name;
     protected $host;
+    protected $shareUrl;
 
     public function getId()
     {
@@ -40,6 +41,11 @@ class Media extends Item
     protected function getHost($protocol = 'http')
     {
         return "{$protocol}://{$this->host}";
+    }
+
+    public function getShareUrl()
+    {
+        return $this->shareUrl;
     }
 
     public function getThumbnailUrl($width = null, $height = null)
