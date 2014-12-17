@@ -11,6 +11,8 @@ class Media extends Item
     protected $name;
     protected $host;
     protected $shareUrl;
+    protected $created;
+    protected $modified;
 
     public function getId()
     {
@@ -46,6 +48,16 @@ class Media extends Item
     public function getShareUrl()
     {
         return $this->shareUrl;
+    }
+
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    public function getModified()
+    {
+        return $this->modified;
     }
 
     public function getThumbnailUrl($width = null, $height = null)
