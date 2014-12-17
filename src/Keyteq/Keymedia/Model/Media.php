@@ -57,7 +57,7 @@ class Media extends Item
             return $this->getImageThumbnailUrl($width, $height);
         }
         elseif ($this->isImage(array('svg+xml'))) {
-            return $this->file['url'];
+            return $this->shareUrl;
         }
         return $this->getTypeThumbnailUrl();
     }
