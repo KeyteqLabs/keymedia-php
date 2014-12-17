@@ -50,8 +50,9 @@ class MediaTest extends BaseTest
                 'expected' => "http://{$host}/100x100/jpg.jpeg"
             ),
             array('_id' => 'svg', 'host' => $host,
+                'shareUrl' => 'share-url',
                 'file' => array('type' => 'image/svg+xml', 'url' => 'relayed-url'),
-                'expected' => "relayed-url"
+                'expected' => 'share-url'
             ),
         );
 
