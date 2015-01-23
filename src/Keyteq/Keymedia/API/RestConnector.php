@@ -40,6 +40,14 @@ class RestConnector
         return $request->perform();
     }
 
+    public function addMediaVersion($id, array $parameters)
+    {
+        $path = "/media/{$id}/versions.json";
+        $url = $this->buildUrl($path);
+        $request = $this->requestBuilder->buildRequest($url, 'POST', $parameters, true);
+        return $request->perform();
+    }
+
     protected function buildRequest($path, $method, $parameters)
     {
         $url = $this->buildUrl($path);

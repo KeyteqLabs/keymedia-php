@@ -41,6 +41,14 @@ class KeymediaClient
         return $this->api->postMedia($file, $name, $tags, $attributes);
     }
 
+    public function addMediaVersion($id, array $transformations = array())
+    {
+        if (isset($transformations['coords'])) {
+            $transformations['coords'] = implode(',', $transformations['coords']);
+        }
+        return $this->api->addMediaVersion($id, $transformations);
+    }
+
     public function isConnected()
     {
         return $this->api->isConnected();

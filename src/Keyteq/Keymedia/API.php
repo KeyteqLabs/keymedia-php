@@ -82,6 +82,12 @@ class API
         return $result;
     }
 
+    public function addMediaVersion($id, array $transformations = array())
+    {
+        $response = $this->connector->addMediaVersion($id, $transformations);
+        return json_decode($response, true);
+    }
+
     public function isConnected()
     {
         $response = $this->connector->getCollection('media', array('q' => ''));
