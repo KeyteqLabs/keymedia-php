@@ -24,15 +24,10 @@ abstract class AbstractMapper
 
     public function mapCollection($json)
     {
-        $collection = array();
         $parsed = $this->jsonToArray($json);
         $data = $this->retrieveByKey($parsed, static::JSON_RESPONSE_KEY);
 
-        foreach ($data as $item) {
-            $collection[]= $this->createItem($item);
-        }
-
-        return $collection;
+        return array_map(array($this, 'createItem'), $data);
     }
 
     protected function createItem($data)
