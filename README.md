@@ -4,7 +4,7 @@ keymedia-php
 KeyMedia PHP API wrapper
 
 [![Build Status](https://travis-ci.org/KeyteqLabs/keymedia-php.png?branch=master)](https://travis-ci.org/KeyteqLabs/keymedia-php)
-[![Latest Version](https://poser.pugx.org/leaphly/cart-bundle/v/unstable.svg)](https://packagist.org/packages/keyteqlabs/keymedia)
+[![Latest Stable Version](https://poser.pugx.org/keyteqlabs/keymedia/v/stable.svg)](https://packagist.org/packages/keyteqlabs/keymedia)
 
 ## Basic usage example
 
