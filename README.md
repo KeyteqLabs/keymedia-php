@@ -12,7 +12,7 @@ KeyMedia PHP API wrapper
 
 ### Initialize the client
 ```php
-$client = new KeymediaClient('username', 'keymediaURL', 'apiKey');
+$client = new Keyteq\Keymedia\KeymediaClient('username', 'keymediaURL', 'apiKey');
 ```
 ### In case you don't have the API key yet
 ```php
