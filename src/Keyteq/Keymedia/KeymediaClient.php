@@ -20,19 +20,13 @@ class KeymediaClient
         $this->api = new API($config, $connector, $mapperFactory);
     }
 
-    public function getMedia($mediaId)
+    public function __call($method, $args)
     {
-        return $this->api->getMedia($mediaId);
-    }
-
-    public function listAlbums()
-    {
-        return $this->api->listAlbums();
-    }
-
-    public function listMedia($album = false, $search = false)
-    {
-        return $this->api->listMedia($album, $search);
+        $target = array($this->api, $method);
+        if (is_callable($target)) {
+            return call_user_func_array($target, $args);
+        }
+        throw new \BadMethodCallException("{$method} is not callable or does not exist");
     }
 
     public function postMedia($file, $name, array $tags = array(), array $attributes = array())
@@ -47,15 +41,5 @@ class KeymediaClient
             $transformations['coords'] = implode(',', $transformations['coords']);
         }
         return $this->api->addMediaVersion($id, $transformations);
-    }
-
-    public function isConnected()
-    {
-        return $this->api->isConnected();
-    }
-
-    public function getToken($password)
-    {
-        return $this->api->getToken($password);
     }
 }
