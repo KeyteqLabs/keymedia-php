@@ -13,27 +13,23 @@ KeyMedia PHP API wrapper
 ### Initialize the client
 ```php
 $client = new Keyteq\Keymedia\KeymediaClient('username', 'keymediaURL', 'apiKey');
-```
-### In case you don't have the API key yet
-```php
-$client = new KeymediaClient('username', 'keymediaURL');
+//In case you don't have the API key yet
+$client = new Keyteq\Keymedia\KeymediaClient('username', 'keymediaURL');
 $client->getToken('password');
 ```
-### List albums
+
+### Working with albums
 ```php
 $albums = $client->listAlbums();
-```
 
-### Get all media contained in an album
-```php
+// List album content
 $mediaArray = $client->getAlbum('albumName');
-```
-###Search by name within an album
-```php
+
+// Search within album
 $mediaArray = $client->getAlbum('albumName', 'searchTerm');
 ```
 
-### Combined search by media / album names
+### Search by media / album names
 ```php
 $mediaArray = $client->findMedia('searchTerm');
 ```
@@ -43,22 +39,10 @@ $mediaArray = $client->findMedia('searchTerm');
 $media = $client->getMedia('id');
 ```
 
-### Get media file type
+### Accessing media information
 ```php
 $type = $media->getType();
-```
-
-### Check if media is an image
-```php
 $isImage = $media->isImage();
-```
-
-### Get media's public URL
-```php
 $url = $media->getUrl();
-```
-
-### Get the media's thumbnail URL
-```php
 $thumbnailUrl = $media->getThumbnailUrl($width, $height);
 ```
