@@ -4,8 +4,11 @@ keymedia-php
 KeyMedia PHP API wrapper
 
 [![Build Status](https://travis-ci.org/KeyteqLabs/keymedia-php.png?branch=master)](https://travis-ci.org/KeyteqLabs/keymedia-php)
+[![Latest Version](https://poser.pugx.org/leaphly/cart-bundle/v/unstable.svg)](https://packagist.org/packages/keyteqlabs/keymedia)
 
 ## Basic usage example
+
+`composer require keyteqlabs/keymedia`
 
 ### Initialize the client
 ```php
