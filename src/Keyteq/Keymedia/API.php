@@ -72,6 +72,18 @@ class API
         return $result;
     }
 
+    public function updateMedia($id, array $tags = array(), array $attributes = array())
+    {
+        $tags = join(',', $tags);
+        $args = compact('tags', 'attributes');
+        $payload = array_filter($args);
+        $resource = "media/{$id}";
+        $response = $this->connector->postResource($resource, $payload);
+        $result = $this->mediaMapper->mapItem($response);
+
+        return $result;
+    }
+
     public function postMedia($file, $name, array $tags = array(), array $attributes = array())
     {
         $args = compact('file', 'name', 'tags', 'attributes');
