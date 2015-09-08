@@ -40,9 +40,13 @@ class Media extends Item
         return $this->file['url'];
     }
 
-    protected function getHost($protocol = 'http')
+    /**
+     * @param string/false $protocol false to get host without protocol
+     * @return string
+     */
+    public function getHost($protocol = 'http')
     {
-        return "{$protocol}://{$this->host}";
+        return $protocol === false ? $this->host : "{$protocol}://{$this->host}";
     }
 
     public function getShareUrl()
@@ -89,7 +93,7 @@ class Media extends Item
         return $this->buildUrl("{$width}x{$height}/{$this->_id}.{$ending}");
     }
 
-    protected function getExtension()
+    public function getExtension()
     {
         if ($this->file && isset($this->file['ending'])) {
             $ending = $this->file['ending'];
