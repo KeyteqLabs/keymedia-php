@@ -13,6 +13,18 @@ class Media extends Item
     protected $shareUrl;
     protected $created;
     protected $modified;
+    protected $tags;
+    protected $attributes;
+
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
 
     public function getId()
     {
